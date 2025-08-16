@@ -1,98 +1,85 @@
 const User = require('../models/User');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcrypt');
 
-// Create JWT token
-const createToken = (user) => {
-  return jwt.sign(
-    { id: user._id, name: user.name, role: user.role },
-    process.env.JWT_SECRET,
-    { expiresIn: '3d' }
-  );
-};
-
-// Register user
-exports.registerUser = async (req, res) => {
+// Register user controller
+const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // Check if user exists
-    const existing = await User.findOne({ email });
-    if (existing) return res.status(400).json({ message: 'Email already exists' });
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ message: 'Email already registered' });
+    }
 
-    // Hash password
-    const hashedPassword = await bcrypt.hash(password, 10);
-
-    // Create user
-    const newUser = new User({
-      name,
-      email,
-      password: hashedPassword,
-      role: role || 'user'
-    });
-
-    // Save to DB
-    await newUser.save();
+    // Create and save new user
+    const user = new User({ name, email, password, role });
+    await user.save();
 
     // Generate token
-    const token = createToken(newUser);
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
-    // Send response (without password)
-    const userResponse = {
-      _id: newUser._id,
-      name: newUser.name,
-      email: newUser.email,
-      role: newUser.role,
-    };
-
-    res.status(201).json({ user: userResponse, token });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    // Respond with user info and token
+    return res.status(201).json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Registration error:', error);
+    return res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// Login user
-exports.loginUser = async (req, res) => {
+// Login user controller
+const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Find user and select password
+    // Find user by email including password
     const user = await User.findOne({ email }).select('+password');
-    if (!user) return res.status(400).json({ message: 'Invalid email or password' });
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
-    // Compare passwords
-    const isMatch = await bcrypt.compare(password, user.password);
-    if (!isMatch) return res.status(400).json({ message: 'Invalid email or password' });
+    // Check if password matches
+    const isMatch = await user.isPasswordCorrect(password);
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
 
     // Generate token
-    const token = createToken(user);
+    const token = jwt.sign(
+      { userId: user._id, role: user.role },
+      process.env.JWT_SECRET,
+      { expiresIn: '1h' }
+    );
 
-    // Send response (without password)
-    const userResponse = {
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-    };
-
-    res.status(200).json({ user: userResponse, token });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
+    // Send response
+    return res.json({
+      token,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      }
+    });
+  } catch (error) {
+    console.error('Login error:', error);
+    return res.status(500).json({ message: 'Server error', error: error.message });
   }
 };
 
-// Delete user by email
-exports.deleteUser = async (req, res) => {
-  try {
-    const email = req.params.email;
-    const deletedUser = await User.findOneAndDelete({ email });
-
-    if (!deletedUser) {
-      return res.status(404).json({ message: 'User not found' });
-    }
-
-    res.status(200).json({ message: `Deleted user ${email}` });
-  } catch (err) {
-    res.status(500).json({ message: err.message });
-  }
+module.exports = {
+  registerUser,
+  loginUser
 };
