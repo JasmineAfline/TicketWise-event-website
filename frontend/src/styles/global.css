@@ -1,0 +1,19 @@
+/* src/styles/global.css */
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f0f2f5;
+  color: #333;
+}
+
+h1 {
+  color: #302b63;
+  text-align: center;
+  margin-top: 2rem;
+}
+
+p {
+  text-align: center;
+  font-size: 1.2rem;
+}
