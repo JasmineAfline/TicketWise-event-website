@@ -1,12 +1,14 @@
-import React from "react";
 import "./App.css";
+import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-import Home from "./pages/Home";
-import Events from "./api/pages/Events/Events.jsx";
-import Flights from "./pages/Flights";
-import Getaways from "./pages/Getaways";
+import Home from "./pages/Home/Home";
+import Events from "./pages/Events/Events";
+import Flights from "./pages/Flights/Flights";
+import Getaways from "./pages/Getaways/Getaways";
+
+
 
 function App() {
   return (
