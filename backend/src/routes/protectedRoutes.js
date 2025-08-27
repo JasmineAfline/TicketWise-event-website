@@ -1,21 +1,18 @@
 const express = require('express');
 const router = express.Router();
+
+// correct relative paths (one '..' from /routes to /middleware)
 const { protect } = require('../middleware/authMiddleware');
 const { authorizeRoles } = require('../middleware/roleMiddleware');
 
-// ✅ Admin Only Route
 router.get('/admin', protect, authorizeRoles('admin'), (req, res) => {
-  res.json({ message: 'Welcome User! Access Granted' });
+  res.json({ message: 'Welcome Admin! Access Granted' });
 });
 
-
-
-// ✅ Employee Only Route
 router.get('/employee', protect, authorizeRoles('employee'), (req, res) => {
   res.json({ message: 'Welcome Employee!' });
 });
 
-// ✅ General User Only Route
 router.get('/user', protect, authorizeRoles('user'), (req, res) => {
   res.json({ message: 'Welcome User!' });
 });
