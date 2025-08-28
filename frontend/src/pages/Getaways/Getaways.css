@@ -1,0 +1,25 @@
+.getaways-page {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.getaway-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
+
+.getaway-card {
+  width: 300px;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.getaway-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}

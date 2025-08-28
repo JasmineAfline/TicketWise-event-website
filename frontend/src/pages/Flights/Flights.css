@@ -1,43 +1,18 @@
-/* Flights.css */
+.flights-page {
+  padding: 40px 20px;
+}
 
-.flights-container {
+.search-form {
+  background: white;
   padding: 20px;
-  font-family: Arial, sans-serif;
-  max-width: 800px;
-  margin: 0 auto;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
 }
 
-.flights-container h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #333;
-}
-
-.flights-list {
-  list-style-type: none;
-  padding: 0;
-}
-
-.flight-item {
-  padding: 15px;
-  margin-bottom: 15px;
+.search-form input, .search-form select {
+  padding: 10px;
+  margin: 10px 0;
+  width: 100%;
   border: 1px solid #ddd;
-  border-radius: 8px;
-  transition: background-color 0.3s ease;
-}
-
-.flight-item:hover {
-  background-color: #f5f5f5;
-}
-
-.flight-route {
-  font-weight: bold;
-  font-size: 1.1rem;
-  color: #222;
-}
-
-.flight-date,
-.flight-price {
-  color: #666;
-  font-size: 0.9rem;
+  border-radius: 6px;
 }

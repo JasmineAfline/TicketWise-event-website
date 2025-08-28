@@ -1,36 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React from "react";
+import "./Flights.css";
 
-const Flights = () => {
-  const [flights, setFlights] = useState([]);
-
-  // Example: Fetch flights data from an API on component mount
-  useEffect(() => {
-    // Replace with your actual API call
-    const fetchFlights = async () => {
-      // Mock flight data
-      const data = [
-        { id: 1, from: 'New York', to: 'London', date: '2024-09-01', price: 500 },
-        { id: 2, from: 'Paris', to: 'Tokyo', date: '2024-10-15', price: 750 },
-        { id: 3, from: 'Sydney', to: 'Los Angeles', date: '2024-11-20', price: 900 },
-      ];
-      setFlights(data);
-    };
-
-    fetchFlights();
-  }, []);
-
+function Flights() {
   return (
-    <div>
-      <h2>Available Flights</h2>
-      <ul>
-        {flights.map(flight => (
-          <li key={flight.id}>
-            {flight.from} to {flight.to} - {flight.date} - ${flight.price}
-          </li>
-        ))}
-      </ul>
+    <div className="flights-page">
+      <section className="flights-hero">
+        <h1>Book Your Flight ✈️</h1>
+        <p>Find the best deals for your travels.</p>
+      </section>
+
+      <section className="flight-search">
+        <form className="search-form">
+          <input type="text" placeholder="From" />
+          <input type="text" placeholder="To" />
+          <input type="date" />
+          <button type="submit">Search Flights</button>
+        </form>
+      </section>
     </div>
   );
-};
+}
 
 export default Flights;
