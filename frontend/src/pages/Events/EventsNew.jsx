@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { createEvent } from "../../services/eventsService";
 import "./Events.css";
 
 function EventsNew() {
@@ -8,26 +9,24 @@ function EventsNew() {
     location: "",
     description: "",
   });
+  const [error, setError] = useState("");
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
 
-    // 🔥 For now we just log, later this will POST to backend API
-    console.log("New Event Data:", formData);
-
-    // Reset form
-    setFormData({
-      title: "",
-      date: "",
-      location: "",
-      description: "",
-    });
-    alert("Event created successfully (dummy for now)!");
+    try {
+      await createEvent(formData); // send data to backend
+      alert("Event created successfully!");
+      setFormData({ title: "", date: "", location: "", description: "" });
+    } catch (err) {
+      setError(err.response?.data?.message || "Failed to create event");
+    }
   };
 
   return (
@@ -78,12 +77,14 @@ function EventsNew() {
             placeholder="Describe the event..."
             rows="4"
             required
-          ></textarea>
+          />
         </div>
 
         <button type="submit" className="btn-submit">
           Save Event
         </button>
+
+        {error && <p className="error">{error}</p>}
       </form>
     </div>
   );

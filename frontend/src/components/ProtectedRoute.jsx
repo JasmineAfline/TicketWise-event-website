@@ -1,21 +1,21 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; // make sure path is correct
+import { useAuth } from "../context/AuthContext";
 
-function ProtectedRoute({ children, allowedRoles }) {
-  const { user } = useAuth();
+function ProtectedRoute({ children, allowedRoles = [] }) {
+  const { isAuthenticated, role } = useAuth();
 
-  // If no user logged in → redirect to register page
-  if (!user) {
-    return <Navigate to="/register" replace />;
+  if (!isAuthenticated) {
+    // Not logged in → redirect to login
+    return <Navigate to="/login" replace />;
   }
 
-  // If allowedRoles are defined but user role is not included → redirect home
-  if (allowedRoles && !allowedRoles.includes(user.role)) {
+  if (allowedRoles.length && !allowedRoles.includes(role)) {
+    // Logged in but role not allowed → redirect to home or 403 page
     return <Navigate to="/" replace />;
   }
 
-  // Otherwise → show the page
+  // Logged in and role allowed → render the page
   return children;
 }
 

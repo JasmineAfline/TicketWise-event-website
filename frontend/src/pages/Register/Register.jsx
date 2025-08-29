@@ -8,7 +8,7 @@ function Register() {
     email: "",
     password: "",
   });
-
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -17,12 +17,14 @@ function Register() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+
     try {
-      await registerUser(formData);
+      const data = await registerUser(formData); // call backend
       alert("Registered successfully!");
-      navigate("/login");
-    } catch (error) {
-      alert(error.response?.data?.message || "Registration failed");
+      navigate("/login"); // redirect to login page
+    } catch (err) {
+      setError(err.response?.data?.message || "Registration failed");
     }
   };
 
@@ -30,10 +32,28 @@ function Register() {
     <div className="register-page">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
-        <input name="name" placeholder="Name" onChange={handleChange} required />
-        <input name="email" type="email" placeholder="Email" onChange={handleChange} required />
-        <input name="password" type="password" placeholder="Password" onChange={handleChange} required />
+        <input
+          name="name"
+          placeholder="Name"
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          onChange={handleChange}
+          required
+        />
         <button type="submit">Register</button>
+        {error && <p className="error">{error}</p>}
       </form>
     </div>
   );

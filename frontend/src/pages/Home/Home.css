@@ -4,6 +4,26 @@
   color: #222;
 }
 
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+}
+
+.buy-btn {
+  background: #ff5733;
+  color: white;
+  border: none;
+  padding: 0.8rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.buy-btn:hover {
+  background: #e14e2d;
+}
+
+
 /* Hero Section */
 .hero {
   position: relative;
@@ -32,14 +52,28 @@
 .hero-text h1 {
   font-size: 2.8rem;
   margin-bottom: 15px;
-  color: #fff !important;
+  color: #6d0adf !important;
 }
 
 .hero-text p {
-  font-size: 2.8rem;
+  font-size: 3.8rem;
   margin-bottom: 20px;
-  color: #f1f1f1;
+  color: #150b9b;
 }
+.hero-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #ff4757;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 10px;
+}
+
+.hero-btn:hover {
+  background-color: #e84118;
+}
+
 
 .cta-btn {
   background: linear-gradient(135deg, #007BFF, #0047ab);

@@ -1,4 +1,4 @@
-import React from "react";
+import React from "react"; 
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -12,10 +12,15 @@ import Login from "./pages/Auth/Login/Login";
 import Register from "./pages/Auth/Register/Register";
 import EventsNew from "./pages/Events/EventsNew";
 import ProtectedRoute from "./components/ProtectedRoute";
+
+import Checkout from "./pages/Checkout/Checkout";   
 import CheckoutSuccess from "./pages/Checkout/CheckoutSuccess";
 import CheckoutFailure from "./pages/Checkout/CheckoutFailure";
+import { useAuth } from "./context/AuthContext"; // 👈 import auth context
 
 function App() {
+  const { user } = useAuth(); // 👈 check if logged in
+
   return (
     <>
       <Navbar />
@@ -27,9 +32,18 @@ function App() {
         <Route path="/getaways" element={<Getaways />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+
+        {/* Checkout routes - protected */}
+        <Route
+          path="/checkout"
+          element={user ? <Checkout /> : <Navigate to="/login" />}
+        />
+        <Route
+          path="/checkout/:eventId"
+          element={user ? <Checkout /> : <Navigate to="/login" />}
+        />
         <Route path="/checkout/success" element={<CheckoutSuccess />} />
         <Route path="/checkout/failure" element={<CheckoutFailure />} />
-        
 
         {/* Protected routes */}
         <Route

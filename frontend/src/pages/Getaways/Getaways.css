@@ -23,3 +23,26 @@
   height: 200px;
   object-fit: cover;
 }
+
+
+.getaway-card p strong {
+  color: #2a9d8f; /* Green highlight */
+  font-size: 1.1rem;
+}
+
+.getaway-card p {
+  margin: 5px 0;
+}
+
+.getaway-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 15px;
+  text-align: center;
+  transition: transform 0.3s ease;
+}
+
+.getaway-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}

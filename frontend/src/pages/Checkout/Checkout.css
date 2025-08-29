@@ -1,3 +1,107 @@
+/* Container */
+.checkout-page {
+  max-width: 900px;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: #fff;
+  border-radius: 1rem;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Heading */
+.checkout-page h1 {
+  font-size: 2rem;
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: #222;
+}
+
+/* Layout */
+.checkout-container {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 2rem;
+}
+
+/* Form */
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.checkout-form label {
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  display: block;
+  color: #333;
+}
+
+.checkout-form input,
+.checkout-form select {
+  width: 100%;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #ddd;
+  font-size: 1rem;
+  outline: none;
+  transition: border 0.2s ease-in-out;
+}
+
+.checkout-form input:focus,
+.checkout-form select:focus {
+  border-color: #0077ff;
+}
+
+/* Summary Card */
+.order-summary {
+  background: #f9fafb;
+  padding: 1.5rem;
+  border-radius: 0.75rem;
+  border: 1px solid #eee;
+}
+
+.order-summary h2 {
+  font-size: 1.5rem;
+  margin-bottom: 1rem;
+}
+
+.order-summary p {
+  font-size: 1rem;
+  margin: 0.5rem 0;
+}
+
+/* Payment button */
+.checkout-btn {
+  width: 100%;
+  padding: 1rem;
+  background: linear-gradient(135deg, #0077ff, #00c6ff);
+  border: none;
+  color: white;
+  font-size: 1.1rem;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: transform 0.2s ease-in-out, background 0.3s ease;
+  margin-top: 1rem;
+}
+
+.checkout-btn:hover {
+  background: linear-gradient(135deg, #005fcc, #00a2cc);
+  transform: translateY(-2px);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .checkout-container {
+    grid-template-columns: 1fr;
+  }
+
+  .order-summary {
+    margin-top: 2rem;
+  }
+}
+
 .checkout-success {
   text-align: center;
   padding: 50px;

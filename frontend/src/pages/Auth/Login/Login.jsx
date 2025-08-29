@@ -1,29 +1,29 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../../context/AuthContext";
+import { loginUser } from "../../../services/authService"; // import service
 import "./Login.css";
 
 function Login() {
   const [loginData, setLoginData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
+  const { login } = useAuth(); // get login function from context
 
   const handleChange = (e) => {
     setLoginData({ ...loginData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const users = JSON.parse(localStorage.getItem("users")) || [];
-    const user = users.find(
-      (u) => u.email === loginData.email && u.password === loginData.password
-    );
+    setError("");
 
-    if (user) {
-      localStorage.setItem("loggedInUser", JSON.stringify(user));
-      alert("Login successful!");
-      navigate("/dashboard"); // or home
-    } else {
-      alert("Invalid email or password");
+    try {
+      const data = await loginUser(loginData); // call backend
+      login(data); // store user and token in context/localStorage
+      navigate("/dashboard"); // redirect after login
+    } catch (err) {
+      setError(err.response?.data?.message || "Login failed"); // handle errors
     }
   };
 
@@ -48,6 +48,7 @@ function Login() {
           required
         />
         <button type="submit">Login</button>
+        {error && <p className="error">{error}</p>}
       </form>
     </div>
   );

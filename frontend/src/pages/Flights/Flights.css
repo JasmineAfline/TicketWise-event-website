@@ -2,6 +2,34 @@
   padding: 40px 20px;
 }
 
+
+.flights-hero {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.flight-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.flight-card {
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  background: #fff;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.flight-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+
+
 .search-form {
   background: white;
   padding: 20px;
@@ -15,4 +43,19 @@
   width: 100%;
   border: 1px solid #ddd;
   border-radius: 6px;
+}
+
+.book-btn {
+  margin-top: 12px;
+  padding: 10px 16px;
+  background: #0077b6;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.book-btn:hover {
+  background: #023e8a;
 }
