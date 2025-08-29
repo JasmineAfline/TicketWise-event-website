@@ -1,6 +1,6 @@
 import React from "react";
 import { Navigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext"; // adjust path if needed
+import { useAuth } from "../context/AuthContext"; // make sure path is correct
 
 function ProtectedRoute({ children, allowedRoles }) {
   const { user } = useAuth();
@@ -10,9 +10,9 @@ function ProtectedRoute({ children, allowedRoles }) {
     return <Navigate to="/register" replace />;
   }
 
-  // If role not allowed → redirect to dashboard
-  if (!allowedRoles.includes(user.role)) {
-    return <Navigate to="/dashboard" replace />;
+  // If allowedRoles are defined but user role is not included → redirect home
+  if (allowedRoles && !allowedRoles.includes(user.role)) {
+    return <Navigate to="/" replace />;
   }
 
   // Otherwise → show the page

@@ -12,6 +12,8 @@ import Login from "./pages/Auth/Login/Login";
 import Register from "./pages/Auth/Register/Register";
 import EventsNew from "./pages/Events/EventsNew";
 import ProtectedRoute from "./components/ProtectedRoute";
+import CheckoutSuccess from "./pages/Checkout/CheckoutSuccess";
+import CheckoutFailure from "./pages/Checkout/CheckoutFailure";
 
 function App() {
   return (
@@ -25,6 +27,9 @@ function App() {
         <Route path="/getaways" element={<Getaways />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/checkout/success" element={<CheckoutSuccess />} />
+        <Route path="/checkout/failure" element={<CheckoutFailure />} />
+        
 
         {/* Protected routes */}
         <Route

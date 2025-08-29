@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
-const Ticket = require('../models/Ticket'); 
-const Event = require('../models/Event'); 
+const Ticket = require('../models/Ticket');
+const Event = require('../models/Event');
 const { protect, adminOrEmployee } = require('../middleware/authMiddleware');
 
 // GET /api/reports - Sales & revenue per event
@@ -10,18 +10,18 @@ router.get('/', protect, adminOrEmployee, async (req, res) => {
     const reports = await Ticket.aggregate([
       {
         $group: {
-          _id: '$event', 
+          _id: '$event',
           ticketsSold: { $sum: 1 },
-          revenue: { $sum: '$amount' } 
+          revenue: { $sum: '$amount' }
         }
       }
     ]);
 
-    const populatedReports = await Event.populate(reports, { path: '_id', select: 'name' });
+    const populatedReports = await Event.populate(reports, { path: '_id', select: 'title' });
 
     const formattedReports = populatedReports.map(r => ({
       eventId: r._id._id,
-      eventName: r._id.name,
+      eventName: r._id.title,
       ticketsSold: r.ticketsSold,
       revenue: r.revenue
     }));

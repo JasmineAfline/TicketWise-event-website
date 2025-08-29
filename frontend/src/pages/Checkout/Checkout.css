@@ -1,0 +1,55 @@
+.checkout-success {
+  text-align: center;
+  padding: 50px;
+}
+
+.checkout-success h1 {
+  color: green;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.back-btn:hover {
+  background: #0056b3;
+}
+
+
+.checkout-success,
+.checkout-failure {
+  text-align: center;
+  padding: 50px;
+}
+
+.checkout-success h1 {
+  color: green;
+  margin-bottom: 20px;
+}
+
+.checkout-failure h1 {
+  color: red;
+  margin-bottom: 20px;
+}
+
+.back-btn {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background: #007bff;
+  color: white;
+  border-radius: 6px;
+  text-decoration: none;
+}
+
+.back-btn:hover {
+  background: #0056b3;
+}
+
