@@ -11,15 +11,21 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Login from "./pages/Auth/Login/Login";
 import Register from "./pages/Auth/Register/Register";
 import EventsNew from "./pages/Events/EventsNew";
+
+import AddEvent from "./pages/Admin/AddEvent";        // new
+import BuyTicket from "./pages/Events/BuyTicket";     // new
+import MyTickets from "./pages/Events/MyTickets";     // new
+
 import ProtectedRoute from "./components/ProtectedRoute";
 
 import Checkout from "./pages/Checkout/Checkout";   
 import CheckoutSuccess from "./pages/Checkout/CheckoutSuccess";
 import CheckoutFailure from "./pages/Checkout/CheckoutFailure";
-import { useAuth } from "./context/AuthContext"; // 👈 import auth context
+
+import { useAuth } from "./context/AuthContext";
 
 function App() {
-  const { user } = useAuth(); // 👈 check if logged in
+  const { user } = useAuth();
 
   return (
     <>
@@ -45,15 +51,46 @@ function App() {
         <Route path="/checkout/success" element={<CheckoutSuccess />} />
         <Route path="/checkout/failure" element={<CheckoutFailure />} />
 
-        {/* Protected routes */}
+       {/* Dashboard routes */}
+       <Route
+        path="/dashboard"
+        element={
+         <ProtectedRoute allowedRoles={["admin", "employee", "user"]}>
+         <Dashboard user={user} />   {/* 👈 pass user here */}
+      </ProtectedRoute>
+    }
+   />
+
+
+        {/* Admin routes */}
         <Route
-          path="/dashboard"
+          path="/admin/add-event"
           element={
-            <ProtectedRoute allowedRoles={["admin", "employee", "user"]}>
-              <Dashboard />
+            <ProtectedRoute allowedRoles={["admin"]}>
+              <AddEvent />
             </ProtectedRoute>
           }
         />
+
+        {/* User routes */}
+        <Route
+          path="/events/buy-ticket"
+          element={
+            <ProtectedRoute allowedRoles={["user"]}>
+              <BuyTicket />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path="/events/my-tickets"
+          element={
+            <ProtectedRoute allowedRoles={["user"]}>
+              <MyTickets />
+            </ProtectedRoute>
+          }
+        />
+
+        {/* Existing employee/admin event creation */}
         <Route
           path="/events/new"
           element={
@@ -63,7 +100,7 @@ function App() {
           }
         />
 
-        {/* Fallback for unknown routes */}
+        {/* Fallback */}
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
       <Footer />

@@ -1,24 +1,31 @@
 const Event = require("../models/Event");
 
-// @desc Create Event
+// @desc Create Event(s)
 // @route POST /api/events
 // @access Employee/Admin
 const createEvent = async (req, res) => {
   try {
-    const { title, description, date, location, price } = req.body;
+    const data = req.body;
 
+    // 👉 Check if multiple events (array)
+    if (Array.isArray(data)) {
+      // Add createdBy for each event
+      const eventsWithUser = data.map((ev) => ({
+        ...ev,
+        createdBy: req.user.id,
+      }));
+
+      const events = await Event.insertMany(eventsWithUser);
+      return res.status(201).json(events);
+    }
+
+    // 👉 Single event
     let event = await Event.create({
-      title,
-      description,
-      date,
-      location,
-      price,
+      ...data,
       createdBy: req.user.id, // from auth middleware
     });
 
-    // ✅ Populate before returning
     event = await event.populate("createdBy", "name email role");
-
     res.status(201).json(event);
   } catch (error) {
     res.status(500).json({ message: "Error creating event", error: error.message });
@@ -69,7 +76,6 @@ const updateEvent = async (req, res) => {
       return res.status(403).json({ message: "Not authorized to update this event" });
     }
 
-    // ✅ Update and re-fetch with populate
     event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true })
       .populate("createdBy", "name email role");
 

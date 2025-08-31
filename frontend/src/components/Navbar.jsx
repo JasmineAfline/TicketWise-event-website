@@ -19,7 +19,10 @@ function Navbar() {
         <li><NavLink to="/events">Events</NavLink></li>
         <li><NavLink to="/flights">Flights</NavLink></li>
         <li><NavLink to="/getaways">Getaways</NavLink></li>
-        <li><NavLink to="/dashboard">Dashboard</NavLink></li>
+
+        {isAuthenticated && (
+          <li><NavLink to="/dashboard">Dashboard</NavLink></li>
+        )}
 
         {!isAuthenticated ? (
           <li><NavLink to="/login">Login</NavLink></li>
@@ -31,5 +34,4 @@ function Navbar() {
   );
 }
 
-
-export default  Navbar;
+export default Navbar;

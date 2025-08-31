@@ -24,7 +24,7 @@ function Home() {
       {/* Hero Section */}
       <section className="hero">
         <div className="hero-text">
-          <h1>Welcome to TicketWise 🎟️</h1>
+          <h1>Welcome to TicketWise </h1>
           <p>Your gateway to epic events.</p>
 
           {/* ✅ Button adapts to login state */}

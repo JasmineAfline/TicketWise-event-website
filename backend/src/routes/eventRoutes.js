@@ -1,22 +1,28 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const { protect } = require('../middleware/authMiddleware');
-const { authorizeRoles } = require('../middleware/roleMiddleware');
-const { createEvent, getEvents, getEventById, updateEvent, deleteEvent } = require('../controllers/eventController');
+const { protect } = require("../middleware/authMiddleware");
+const { authorizeRoles } = require("../middleware/roleMiddleware");
+const {
+  createEvent,
+  getEvents,
+  getEventById,
+  updateEvent,
+  deleteEvent,
+} = require("../controllers/eventController");
 
-// Public – View Events
-router.get('/', getEvents);
+// Public – View All Events
+router.get("/", getEvents);
 
-// Public – Get single event
-router.get('/:id', getEventById);
+// Public – View Single Event
+router.get("/:id", getEventById);
 
-// Employee/Admin – Create Event
-router.post('/', protect, authorizeRoles('employee', 'admin'), createEvent);
+// Employee/Admin – Create Event(s)
+router.post("/", protect, authorizeRoles("employee", "admin"), createEvent);
 
 // Employee/Admin – Update Event
-router.put('/:id', protect, authorizeRoles('employee', 'admin'), updateEvent);
+router.put("/:id", protect, authorizeRoles("employee", "admin"), updateEvent);
 
 // Admin Only – Delete Event
-router.delete('/:id', protect, authorizeRoles('admin'), deleteEvent);
+router.delete("/:id", protect, authorizeRoles("admin"), deleteEvent);
 
 module.exports = router;
