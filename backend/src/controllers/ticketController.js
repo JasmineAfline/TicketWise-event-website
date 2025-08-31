@@ -1,35 +1,31 @@
-// backend/controllers/ticketController.js
 const Ticket = require("../models/Ticket");
 const Event = require("../models/Event");
 const api = require("../services/mpesaService"); // your M-Pesa API wrapper
-const User = require("../models/User");
 
-// @desc Buy ticket for an event
-// @route POST /api/tickets/checkout
-// @access User
+// 🎟️ Checkout - start M-Pesa payment
 const checkout = async (req, res) => {
   try {
-    const { eventId, amount } = req.body;
+    const { eventId, amount, phoneNumber } = req.body;
     const userId = req.user.id;
 
-    // Find the event
+    // Check event
     const event = await Event.findById(eventId);
     if (!event) return res.status(404).json({ message: "Event not found" });
 
-    // Call M-Pesa API (your service should return a payment URL or status)
+    // Call M-Pesa API
     const paymentResponse = await api.initiatePayment({
-      phoneNumber: req.body.phoneNumber,
+      phoneNumber,
       amount,
       reference: `TICKET-${eventId}-${Date.now()}`,
     });
 
-    // Save ticket in DB with pending status
+    // Save ticket (pending)
     const ticket = await Ticket.create({
       event: eventId,
       user: userId,
       price: amount,
       status: "pending",
-      mpesaRef: paymentResponse.checkoutRequestID,
+      mpesaRef: paymentResponse.CheckoutRequestID, // Safaricom field
     });
 
     res.status(200).json({ ticket, paymentResponse });
@@ -39,9 +35,7 @@ const checkout = async (req, res) => {
   }
 };
 
-// @desc Get user tickets
-// @route GET /api/tickets
-// @access User
+// 📜 Get user tickets
 const getUserTickets = async (req, res) => {
   try {
     const tickets = await Ticket.find({ user: req.user.id }).populate("event");
@@ -51,21 +45,27 @@ const getUserTickets = async (req, res) => {
   }
 };
 
-// @desc Confirm ticket payment (callback from M-Pesa)
-// @route POST /api/tickets/confirm
-// @access Public (called by M-Pesa)
+// ✅ Confirm payment (Safaricom callback)
 const confirmPayment = async (req, res) => {
   try {
-    const { checkoutRequestID, resultCode } = req.body;
+    const { Body } = req.body; // Safaricom sends "Body.stkCallback"
+    const callback = Body?.stkCallback;
 
-    const ticket = await Ticket.findOne({ mpesaRef: checkoutRequestID });
+    if (!callback) return res.status(400).json({ message: "Invalid callback" });
+
+    const { CheckoutRequestID, ResultCode } = callback;
+
+    // Find ticket
+    const ticket = await Ticket.findOne({ mpesaRef: CheckoutRequestID });
     if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
-    ticket.status = resultCode === 0 ? "paid" : "failed";
+    // Update status
+    ticket.status = ResultCode === 0 ? "paid" : "failed";
     await ticket.save();
 
     res.status(200).json({ ticket });
   } catch (err) {
+    console.error("Confirm error:", err);
     res.status(500).json({ message: "Payment confirmation failed", error: err.message });
   }
 };

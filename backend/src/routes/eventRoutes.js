@@ -2,10 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { protect } = require('../middleware/authMiddleware');
 const { authorizeRoles } = require('../middleware/roleMiddleware');
-const { createEvent, getEvents, updateEvent, deleteEvent } = require('../controllers/eventController');
+const { createEvent, getEvents, getEventById, updateEvent, deleteEvent } = require('../controllers/eventController');
 
 // Public – View Events
 router.get('/', getEvents);
+
+// Public – Get single event
+router.get('/:id', getEventById);
 
 // Employee/Admin – Create Event
 router.post('/', protect, authorizeRoles('employee', 'admin'), createEvent);

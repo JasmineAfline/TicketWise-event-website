@@ -78,7 +78,7 @@
   padding: 1rem;
   background: linear-gradient(135deg, #0077ff, #00c6ff);
   border: none;
-  color: white;
+  color: rgb(245, 13, 13);
   font-size: 1.1rem;
   border-radius: 0.75rem;
   cursor: pointer;

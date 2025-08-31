@@ -7,7 +7,6 @@ function Getaways() {
       <section className="getaways-hero">
         <h1>Holiday Getaways 🏖️</h1>
         <p>Find your perfect escape.</p>
-        <p><strong>Price:</strong> KES 12,000</p> 
       </section>
 
       <section className="getaway-cards">
@@ -15,14 +14,14 @@ function Getaways() {
           <img src="/images/beach.jpg" alt="Beach Resort" />
           <h3>Beach Resort</h3>
           <p>Relax by the ocean with our luxury package.</p>
-          <p><strong>Price:</strong> KES 9,500</p>
+          <p><strong>Price:</strong> KES 12,500</p>
         </div>
 
         <div className="getaway-card">
           <img src="/images/mountain.jpg" alt="Mountain Retreat" />
           <h3>Mountain Retreat</h3>
           <p>Escape to the mountains for a peaceful retreat.</p>
-          <p><strong>Price:</strong> KES 7,800</p>
+          <p><strong>Price:</strong> KES 9,800</p>
         </div>
 
         <div className="getaway-card">
