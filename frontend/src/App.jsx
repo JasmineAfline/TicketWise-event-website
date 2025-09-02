@@ -56,7 +56,7 @@ function App() {
         path="/dashboard"
         element={
          <ProtectedRoute allowedRoles={["admin", "employee", "user"]}>
-         <Dashboard user={user} />   {/* 👈 pass user here */}
+         <Dashboard user={user} />   {/*  pass user here */}
       </ProtectedRoute>
     }
    />

@@ -1,6 +1,6 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../context/AuthContext"; // 👈 import auth
+import { useAuth } from "../../context/AuthContext"; //  import auth
 import "./Home.css";
 
 function Home() {
@@ -13,9 +13,9 @@ function Home() {
 
   const handleBuyClick = (eventId) => {
     if (!user) {
-      navigate("/login"); // 👈 force login first
+      navigate("/login"); //  force login first
     } else {
-      navigate(`/checkout/${eventId}`); // 👈 logged in → checkout
+      navigate(`/checkout/${eventId}`); //  logged in → checkout
     }
   };
 
@@ -27,10 +27,10 @@ function Home() {
           <h1>Welcome to TicketWise </h1>
           <p>Your gateway to epic events.</p>
 
-          {/* ✅ Button adapts to login state */}
+          {/*  Button adapts to login state
           <button className="hero-btn" onClick={() => handleBuyClick(1)}>
             {user ? "Buy Ticket" : "Login to Buy"}
-          </button>
+          </button> */}
 
           <button className="cta-btn" onClick={handleGetStarted}>
             Get Started

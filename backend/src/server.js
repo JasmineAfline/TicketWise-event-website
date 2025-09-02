@@ -8,6 +8,9 @@ const protectedRoutes = require('./routes/protectedRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
 const reportsRoutes = require('./routes/reports');
 const flightRoutes = require('./routes/flightRoutes');
+const paymentRoutes = require("./routes/paymentRoutes");
+
+
 
 dotenv.config();
 connectDB();
@@ -27,6 +30,7 @@ app.use('/api/protected', protectedRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/flights', flightRoutes);
+app.use("/api/payments", paymentRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

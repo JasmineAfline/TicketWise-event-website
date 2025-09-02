@@ -1,4 +1,4 @@
-const Payment = require("../models/Payment");
+const Payment = require("../models/Payment")
 
 // STK Push
 exports.initiateSTKPush = async (req, res) => {
@@ -35,7 +35,7 @@ exports.initiateSTKPush = async (req, res) => {
         PartyB: process.env.MPESA_SHORTCODE,
         PhoneNumber: phoneNumber,
         CallBackURL: process.env.MPESA_CALLBACK_URL,
-        AccountReference: ticket._id.toString(), // ✅ pass ticketId so callback can find ticket
+        AccountReference: ticket._id.toString(), //  pass ticketId so callback can find ticket
         TransactionDesc: "Event Ticket Payment",
       },
       { headers: { Authorization: `Bearer ${token}` } }
@@ -61,7 +61,7 @@ exports.mpesaCallback = async (req, res) => {
 
   try {
     const callbackData = req.body.Body.stkCallback;
-    const accountRef = callbackData?.AccountReference; // ✅ our ticketId
+    const accountRef = callbackData?.AccountReference; //  our ticketId
     const ticketId = accountRef;
 
     if (callbackData.ResultCode === 0) {
@@ -73,7 +73,7 @@ exports.mpesaCallback = async (req, res) => {
         (i) => i.Name === "Amount"
       ).Value;
 
-      // ✅ Update payment record
+      // Update payment record
       const payment = await Payment.findOneAndUpdate(
         { ticket: ticketId, status: "pending" },
         {
@@ -84,7 +84,7 @@ exports.mpesaCallback = async (req, res) => {
         { new: true }
       );
 
-      // ✅ Update ticket
+      // Update ticket
       if (payment) {
         await Ticket.findByIdAndUpdate(ticketId, {
           status: "paid",
@@ -92,7 +92,7 @@ exports.mpesaCallback = async (req, res) => {
         });
       }
 
-      console.log(`✅ Payment received: ${amount}, Receipt: ${mpesaReceipt}`);
+      console.log(`Payment received: ${amount}, Receipt: ${mpesaReceipt}`);
     } else {
       // Payment failed
       await Payment.findOneAndUpdate(
