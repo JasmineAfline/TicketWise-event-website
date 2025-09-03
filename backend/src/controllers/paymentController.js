@@ -1,21 +1,29 @@
-const Payment = require("../models/Payment")
+const Payment = require("../models/Payment");
+const Ticket = require("../models/Ticket");
+const axios = require("axios");
+const moment = require("moment");
+const { getToken } = require("../utils/mpesaAuth");
 
 // STK Push
 exports.initiateSTKPush = async (req, res) => {
   try {
-    const { ticketId, phoneNumber, amount } = req.body;
+     const { ticketId, phoneNumber, quantity } = req.body;
 
-    const ticket = await Ticket.findById(ticketId);
-    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+const ticket = await Ticket.findById(ticketId);
+if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
-    // Save pending payment record
-    const payment = await Payment.create({
-      user: req.user._id,
-      ticket: ticket._id,
-      amount,
-      phoneNumber,
-      status: "pending",
-    });
+// Calculate amount from ticket.price * quantity
+const amount = ticket.price * (quantity || 1);
+
+// Save pending payment record
+const payment = await Payment.create({
+  user: req.user._id,
+  ticket: ticket._id,
+  amount,
+  phoneNumber,
+  status: "pending",
+});
+
 
     const token = await getToken();
     const timestamp = moment().format("YYYYMMDDHHmmss");
@@ -35,7 +43,7 @@ exports.initiateSTKPush = async (req, res) => {
         PartyB: process.env.MPESA_SHORTCODE,
         PhoneNumber: phoneNumber,
         CallBackURL: process.env.MPESA_CALLBACK_URL,
-        AccountReference: ticket._id.toString(), //  pass ticketId so callback can find ticket
+        AccountReference: ticket._id.toString(), // ✅ save actual ticket._id
         TransactionDesc: "Event Ticket Payment",
       },
       { headers: { Authorization: `Bearer ${token}` } }
@@ -61,8 +69,7 @@ exports.mpesaCallback = async (req, res) => {
 
   try {
     const callbackData = req.body.Body.stkCallback;
-    const accountRef = callbackData?.AccountReference; //  our ticketId
-    const ticketId = accountRef;
+    const ticketId = callbackData?.AccountReference; // ✅ this is ticket._id
 
     if (callbackData.ResultCode === 0) {
       const mpesaReceipt = callbackData.CallbackMetadata.Item.find(
@@ -92,7 +99,7 @@ exports.mpesaCallback = async (req, res) => {
         });
       }
 
-      console.log(`Payment received: ${amount}, Receipt: ${mpesaReceipt}`);
+      console.log(`✅ Payment received: ${amount}, Receipt: ${mpesaReceipt}`);
     } else {
       // Payment failed
       await Payment.findOneAndUpdate(

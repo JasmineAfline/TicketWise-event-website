@@ -1,5 +1,5 @@
-const express = require('express');
 const dotenv = require('dotenv');
+const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
 const authRoutes = require('./routes/authRoutes');
@@ -31,6 +31,11 @@ app.use('/api/tickets', ticketRoutes);
 app.use('/api/reports', reportsRoutes);
 app.use('/api/flights', flightRoutes);
 app.use("/api/payments", paymentRoutes);
+
+
+console.log("Shortcode:", process.env.MPESA_SHORTCODE);
+console.log("Passkey exists:", !!process.env.MPESA_PASSKEY);
+console.log("Callback URL:", process.env.MPESA_CALLBACK_URL);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));

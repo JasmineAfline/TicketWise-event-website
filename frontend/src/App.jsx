@@ -1,4 +1,4 @@
-import React from "react"; 
+import React from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -12,9 +12,9 @@ import Login from "./pages/Auth/Login/Login";
 import Register from "./pages/Auth/Register/Register";
 import EventsNew from "./pages/Events/EventsNew";
 
-import AddEvent from "./pages/Admin/AddEvent";        // new
-import BuyTicket from "./pages/Events/BuyTicket";     // new
-import MyTickets from "./pages/Events/MyTickets";     // new
+import AddEvent from "./pages/Admin/AddEvent";        
+import BuyTicket from "./pages/Events/BuyTicket";     
+import MyTickets from "./pages/Events/MyTickets";     
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -51,16 +51,15 @@ function App() {
         <Route path="/checkout/success" element={<CheckoutSuccess />} />
         <Route path="/checkout/failure" element={<CheckoutFailure />} />
 
-       {/* Dashboard routes */}
-       <Route
-        path="/dashboard"
-        element={
-         <ProtectedRoute allowedRoles={["admin", "employee", "user"]}>
-         <Dashboard user={user} />   {/*  pass user here */}
-      </ProtectedRoute>
-    }
-   />
-
+        {/* Dashboard routes */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute allowedRoles={["admin", "employee", "user"]}>
+              <Dashboard user={user} />   
+            </ProtectedRoute>
+          }
+        />
 
         {/* Admin routes */}
         <Route
@@ -74,7 +73,7 @@ function App() {
 
         {/* User routes */}
         <Route
-          path="/events/buy-ticket"
+          path="/buy-ticket/:eventId"
           element={
             <ProtectedRoute allowedRoles={["user"]}>
               <BuyTicket />

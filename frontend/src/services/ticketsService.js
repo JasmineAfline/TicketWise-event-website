@@ -1,10 +1,11 @@
 import api from "./api";
 
-// Buy a ticket (protected route)
+// Buy a ticket (protected route → triggers STK Push)
 export const buyTicket = async (ticketData) => {
-  const { data } = await api.post("/tickets/buy", ticketData);
+  const { data } = await api.post("/payments/stkpush", ticketData);
   return data;
 };
+
 
 // Get all tickets for the logged-in user (protected)
 export const getUserTickets = async () => {
