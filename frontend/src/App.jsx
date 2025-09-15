@@ -1,108 +1,52 @@
-import React from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
-
-import Home from "./pages/Home/Home";
-import Events from "./pages/Events/Events";
-import Flights from "./pages/Flights/Flights";
-import Getaways from "./pages/Getaways/Getaways";
-import Dashboard from "./pages/Dashboard/Dashboard";
-import Login from "./pages/Auth/Login/Login";
-import Register from "./pages/Auth/Register/Register";
-import EventsNew from "./pages/Events/EventsNew";
-
-import AddEvent from "./pages/Admin/AddEvent";        
-import BuyTicket from "./pages/Events/BuyTicket";     
-import MyTickets from "./pages/Events/MyTickets";     
-
 import ProtectedRoute from "./components/ProtectedRoute";
 
-import Checkout from "./pages/Checkout/Checkout";   
-import CheckoutSuccess from "./pages/Checkout/CheckoutSuccess";
-import CheckoutFailure from "./pages/Checkout/CheckoutFailure";
+// Pages
+import LandingPage from "./pages/LandingPage";
+import About from "./pages/About";
+import Events from "./pages/Events";
+import Contact from "./pages/Contact";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import Unauthorized from "./pages/Unauthorized";
 
-import { useAuth } from "./context/AuthContext";
+// Dashboards
+import AdminDashboard from "./pages/dashboards/AdminDashboard";
+import EmployeeDashboard from "./pages/dashboards/EmployeeDashboard";
+import UserDashboard from "./pages/dashboards/UserDashboard";
 
 function App() {
-  const { user } = useAuth();
-
   return (
     <>
-      <Navbar />
       <Routes>
-        {/* Public routes */}
-        <Route path="/" element={<Home />} />
-        <Route path="/events" element={<Events />} />
-        <Route path="/flights" element={<Flights />} />
-        <Route path="/getaways" element={<Getaways />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        {/* Public Pages */}
+        <Route path="/" element={<><Navbar /><LandingPage /><Footer /></>} />
+        <Route path="/about" element={<><Navbar /><About /><Footer /></>} />
+        <Route path="/events" element={<><Navbar /><Events /><Footer /></>} />
+        <Route path="/contact" element={<><Navbar /><Contact /><Footer /></>} />
+        <Route path="/login" element={<><Navbar /><Login /><Footer /></>} />
+        <Route path="/register" element={<><Navbar /><Register /><Footer /></>} />
+        <Route path="/unauthorized" element={<Unauthorized />} />
 
-        {/* Checkout routes - protected */}
-        <Route
-          path="/checkout"
-          element={user ? <Checkout /> : <Navigate to="/login" />}
-        />
-        <Route
-          path="/checkout/:eventId"
-          element={user ? <Checkout /> : <Navigate to="/login" />}
-        />
-        <Route path="/checkout/success" element={<CheckoutSuccess />} />
-        <Route path="/checkout/failure" element={<CheckoutFailure />} />
-
-        {/* Dashboard routes */}
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "employee", "user"]}>
-              <Dashboard user={user} />   
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Admin routes */}
-        <Route
-          path="/admin/add-event"
-          element={
-            <ProtectedRoute allowedRoles={["admin"]}>
-              <AddEvent />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* User routes */}
-        <Route
-          path="/buy-ticket/:eventId"
-          element={
-            <ProtectedRoute allowedRoles={["user"]}>
-              <BuyTicket />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/events/my-tickets"
-          element={
-            <ProtectedRoute allowedRoles={["user"]}>
-              <MyTickets />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Existing employee/admin event creation */}
-        <Route
-          path="/events/new"
-          element={
-            <ProtectedRoute allowedRoles={["admin", "employee"]}>
-              <EventsNew />
-            </ProtectedRoute>
-          }
-        />
-
-        {/* Fallback */}
-        <Route path="*" element={<Navigate to="/" replace />} />
+        {/* Protected Dashboards */}
+        <Route path="/admin" element={
+          <ProtectedRoute allowedRoles={["admin"]}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/employee" element={
+          <ProtectedRoute allowedRoles={["employee"]}>
+            <EmployeeDashboard />
+          </ProtectedRoute>
+        } />
+        <Route path="/user" element={
+          <ProtectedRoute allowedRoles={["user"]}>
+            <UserDashboard />
+          </ProtectedRoute>
+        } />
       </Routes>
-      <Footer />
     </>
   );
 }

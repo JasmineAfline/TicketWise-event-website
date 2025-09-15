@@ -7,7 +7,7 @@ const createEvent = async (req, res) => {
   try {
     const data = req.body;
 
-    // 👉 Check if multiple events (array)
+    //  Check if multiple events (array)
     if (Array.isArray(data)) {
       // Add createdBy for each event
       const eventsWithUser = data.map((ev) => ({
@@ -19,7 +19,7 @@ const createEvent = async (req, res) => {
       return res.status(201).json(events);
     }
 
-    // 👉 Single event
+    //  Single event
     let event = await Event.create({
       ...data,
       createdBy: req.user.id, // from auth middleware

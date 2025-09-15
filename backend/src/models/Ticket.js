@@ -17,14 +17,12 @@ const ticketSchema = new mongoose.Schema({
   },
   status: {
     type: String,
-    enum: ["pending", "paid", "cancelled"],
-    default: "pending"
+    enum: ["unpaid", "paid", "cancelled"], 
+    default: "unpaid"
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  mpesaReceipt: {
+    type: String,
   }
-});
+}, { timestamps: true }); //  adds createdAt & updatedAt automatically
 
 module.exports = mongoose.models.Ticket || mongoose.model("Ticket", ticketSchema);
-

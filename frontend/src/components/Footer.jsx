@@ -1,59 +1,47 @@
-import React from "react";
 import { Link } from "react-router-dom";
-import "./Footer.css"; // make sure you have styles
-import "./Footer.css";
 
-function Footer() {
+export default function Footer() {
   return (
-    <footer className="footer">
-      <div className="footer-container">
-        {/* Logo / About */}
-        <div className="footer-section">
-          <h3>TicketWise</h3>
-          <p>Your trusted platform for events, flights, and getaways.</p>
+    <footer className="bg-gray-900 text-gray-300 py-10 mt-20">
+      <div className="container mx-auto px-6 grid md:grid-cols-3 gap-10">
+        {/* Brand Info */}
+        <div>
+          <h2 className="text-2xl font-bold text-white mb-4">Tickewise 🎟️</h2>
+          <p className="text-gray-400">
+            Your trusted platform for discovering, booking, and managing events
+            with ease. Bringing people together, one event at a time.
+          </p>
         </div>
 
         {/* Quick Links */}
-        <div className="footer-section">
-          <h4>Quick Links</h4>
-          <ul>
-            <li><Link to="/events">Events</Link></li>
-            <li><Link to="/flights">Flights</Link></li>
-            <li><Link to="/getaways">Getaways</Link></li>
-            <li><Link to="/about">About Us</Link></li>
-            <li><Link to="/contact">Contact</Link></li>
+        <div>
+          <h3 className="text-lg font-semibold text-white mb-4">Quick Links</h3>
+          <ul className="space-y-2">
+            <li><Link to="/" className="hover:text-purple-400">Home</Link></li>
+            <li><Link to="/events" className="hover:text-purple-400">Events</Link></li>
+            <li><Link to="/about" className="hover:text-purple-400">About</Link></li>
+            <li><Link to="/contact" className="hover:text-purple-400">Contact</Link></li>
           </ul>
         </div>
 
-        {/* Support */}
-        <div className="footer-section">
-          <h4>Support</h4>
-          <ul>
-            <li><Link to="/faq">FAQ</Link></li>
-            <li><Link to="/help">Help Center</Link></li>
-            <li><Link to="/terms">Terms & Conditions</Link></li>
-            <li><Link to="/privacy">Privacy Policy</Link></li>
-          </ul>
-        </div>
-
-        {/* Social Links */}
-        <div className="footer-section">
-          <h4>Follow Us</h4>
-          <div className="social-icons">
-            <a href="https://facebook.com" target="_blank" rel="noreferrer"><i className="fab fa-facebook-f"></i></a>
-            <a href="https://twitter.com" target="_blank" rel="noreferrer"><i className="fab fa-twitter"></i></a>
-            <a href="https://instagram.com" target="_blank" rel="noreferrer"><i className="fab fa-instagram"></i></a>
-            <a href="https://linkedin.com" target="_blank" rel="noreferrer"><i className="fab fa-linkedin"></i></a>
+        {/* Contact / Socials */}
+        <div>
+          <h3 className="text-lg font-semibold text-white mb-4">Get in Touch</h3>
+          <p>Email: support@tickewise.com</p>
+          <p>Phone: +254 700 123 456</p>
+          <div className="flex gap-4 mt-4">
+            <a href="#" className="hover:text-purple-400">🌐</a>
+            <a href="#" className="hover:text-purple-400">📘</a>
+            <a href="#" className="hover:text-purple-400">🐦</a>
+            <a href="#" className="hover:text-purple-400">📸</a>
           </div>
         </div>
       </div>
 
-      {/* Copyright */}
-      <div className="footer-bottom">
-        <p>© {new Date().getFullYear()} TicketWise. All rights reserved.</p>
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-700 mt-10 pt-6 text-center text-gray-500 text-sm">
+        © {new Date().getFullYear()} Tickewise. All rights reserved.
       </div>
     </footer>
   );
 }
-
-export default Footer;

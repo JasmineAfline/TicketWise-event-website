@@ -4,33 +4,37 @@ const axios = require("axios");
 const moment = require("moment");
 const { getToken } = require("../utils/mpesaAuth");
 
-// STK Push
+/**
+ * 1. Initiate STK Push
+ */
 exports.initiateSTKPush = async (req, res) => {
   try {
-     const { ticketId, phoneNumber, quantity } = req.body;
+    const { ticketId, phoneNumber, quantity } = req.body;
 
-const ticket = await Ticket.findById(ticketId);
-if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+    //  Find ticket
+    const ticket = await Ticket.findById(ticketId);
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
 
-// Calculate amount from ticket.price * quantity
-const amount = ticket.price * (quantity || 1);
+    //  Calculate total amount
+    const amount = ticket.price * (quantity || 1);
 
-// Save pending payment record
-const payment = await Payment.create({
-  user: req.user._id,
-  ticket: ticket._id,
-  amount,
-  phoneNumber,
-  status: "pending",
-});
+    //  Create pending payment record
+    const payment = await Payment.create({
+      user: req.user._id,
+      ticket: ticket._id,
+      amount,
+      phoneNumber,
+      status: "pending",
+    });
 
-
+    //  Generate Safaricom credentials
     const token = await getToken();
     const timestamp = moment().format("YYYYMMDDHHmmss");
     const password = Buffer.from(
       `${process.env.MPESA_SHORTCODE}${process.env.MPESA_PASSKEY}${timestamp}`
     ).toString("base64");
 
+    //  Send STK Push request
     const response = await axios.post(
       "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
       {
@@ -39,23 +43,27 @@ const payment = await Payment.create({
         Timestamp: timestamp,
         TransactionType: "CustomerPayBillOnline",
         Amount: amount,
-        PartyA: phoneNumber,
+        PartyA: phoneNumber, // user number (must be sandbox test number!)
         PartyB: process.env.MPESA_SHORTCODE,
         PhoneNumber: phoneNumber,
         CallBackURL: process.env.MPESA_CALLBACK_URL,
-        AccountReference: ticket._id.toString(), // ✅ save actual ticket._id
+        AccountReference: `TICKET-${ticket._id}`,
         TransactionDesc: "Event Ticket Payment",
       },
       { headers: { Authorization: `Bearer ${token}` } }
     );
 
+    //  Save CheckoutRequestID
+    payment.mpesaRef = response.data.CheckoutRequestID;
+    await payment.save();
+
     res.json({
       message: "STK Push initiated",
-      data: response.data,
       paymentId: payment._id,
+      checkoutId: response.data.CheckoutRequestID,
     });
   } catch (error) {
-    console.error(error.response?.data || error.message);
+    console.error("STK Push Error:", error.response?.data || error.message);
     res.status(500).json({
       message: "M-Pesa STK Push failed",
       error: error.response?.data || error.message,
@@ -63,15 +71,18 @@ const payment = await Payment.create({
   }
 };
 
-// Callback
+/**
+ * 2. M-Pesa Callback (Safaricom calls this URL)
+ */
 exports.mpesaCallback = async (req, res) => {
-  console.log("M-Pesa Callback:", JSON.stringify(req.body, null, 2));
+  console.log(" M-Pesa Callback:", JSON.stringify(req.body, null, 2));
 
   try {
     const callbackData = req.body.Body.stkCallback;
-    const ticketId = callbackData?.AccountReference; // ✅ this is ticket._id
+    const checkoutId = callbackData.CheckoutRequestID;
 
     if (callbackData.ResultCode === 0) {
+      //  Success
       const mpesaReceipt = callbackData.CallbackMetadata.Item.find(
         (i) => i.Name === "MpesaReceiptNumber"
       ).Value;
@@ -80,40 +91,53 @@ exports.mpesaCallback = async (req, res) => {
         (i) => i.Name === "Amount"
       ).Value;
 
-      // Update payment record
+      //  Update payment
       const payment = await Payment.findOneAndUpdate(
-        { ticket: ticketId, status: "pending" },
-        {
-          status: "success",
-          mpesaReceipt,
-          rawCallback: callbackData,
-        },
+        { mpesaRef: checkoutId, status: "pending" },
+        { status: "success", mpesaReceipt, rawCallback: callbackData },
         { new: true }
       );
 
-      // Update ticket
       if (payment) {
-        await Ticket.findByIdAndUpdate(ticketId, {
+        await Ticket.findByIdAndUpdate(payment.ticket, {
           status: "paid",
           mpesaReceipt,
         });
       }
 
-      console.log(`✅ Payment received: ${amount}, Receipt: ${mpesaReceipt}`);
+      console.log(`Payment Success: ${amount}, Receipt: ${mpesaReceipt}`);
     } else {
-      // Payment failed
+      //  Failed transaction
       await Payment.findOneAndUpdate(
-        { ticket: ticketId, status: "pending" },
-        {
-          status: "failed",
-          rawCallback: callbackData,
-        }
+        { mpesaRef: checkoutId, status: "pending" },
+        { status: "failed", rawCallback: callbackData }
       );
+      console.log(` Payment Failed: ${callbackData.ResultDesc}`);
     }
 
     res.json({ message: "Callback processed" });
   } catch (error) {
-    console.error("Callback error:", error.message);
+    console.error("Callback Error:", error.message);
     res.status(500).json({ message: "Callback processing failed" });
+  }
+};
+
+/**
+ * 3. Simulated payment (for testing without M-Pesa)
+ */
+exports.simulatePayment = async (req, res) => {
+  try {
+    const { ticketId } = req.body;
+
+    const ticket = await Ticket.findById(ticketId);
+    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
+
+    ticket.status = "paid";
+    ticket.mpesaReceipt = "SIMULATED-" + Date.now();
+    await ticket.save();
+
+    res.json({ message: "Simulated payment successful", ticket });
+  } catch (error) {
+    res.status(500).json({ message: "Simulation error", error: error.message });
   }
 };

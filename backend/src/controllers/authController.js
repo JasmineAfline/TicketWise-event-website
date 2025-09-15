@@ -10,7 +10,7 @@ const generateToken = (user) => {
   });
 };
 
-// 📝 Register
+//  Register
 const registerUser = async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -39,7 +39,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-// 🔐 Login
+//  Login
 const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
@@ -61,7 +61,7 @@ const loginUser = async (req, res) => {
   }
 };
 
-// 📧 Forgot Password
+//  Forgot Password
 const forgotPassword = async (req, res) => {
   const { email } = req.body;
   try {
@@ -88,7 +88,7 @@ const forgotPassword = async (req, res) => {
   }
 };
 
-// 🔄 Reset Password
+//  Reset Password
 const resetPassword = async (req, res) => {
   try {
     const resetPasswordToken = crypto
