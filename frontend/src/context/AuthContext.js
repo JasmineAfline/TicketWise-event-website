@@ -1,11 +1,29 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
+
+  // Load user info if token exists
+  useEffect(() => {
+    const fetchUser = async () => {
+      if (token) {
+        try {
+          const res = await axios.get("http://localhost:5000/auth/me", {
+            headers: { Authorization: `Bearer ${token}` },
+          });
+          setUser(res.data.user);
+        } catch (err) {
+          console.error("Failed to fetch user:", err);
+          logout();
+        }
+      }
+    };
+    fetchUser();
+  }, [token]);
 
   const login = async (email, password) => {
     try {
@@ -13,7 +31,7 @@ export const AuthProvider = ({ children }) => {
       setUser(res.data.user);
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
-      return res.data.user; // return user so Login page can handle redirect
+      return res.data.user; // For Login page redirect
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
       return null;
@@ -36,12 +54,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider
-  value={{ user, setUser, token, login, register, logout }}
->
-  {children}
-</AuthContext.Provider>
-
+    <AuthContext.Provider value={{ user, setUser, token, login, register, logout }}>
+      {children}
+    </AuthContext.Provider>
   );
 };
 

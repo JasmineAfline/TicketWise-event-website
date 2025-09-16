@@ -1,9 +1,10 @@
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
 export default function BookEvent() {
   const { id } = useParams(); // grab event id from URL
+  const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -24,6 +25,11 @@ export default function BookEvent() {
   if (loading) return <p className="text-center mt-10">Loading event...</p>;
   if (!event) return <p className="text-center mt-10">Event not found</p>;
 
+  const handleBooking = () => {
+    // Navigate to the checkout page with the event id
+    navigate(`/checkout/${id}`);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 pt-24 pb-16">
       <div className="container mx-auto px-6 max-w-2xl bg-white shadow-lg rounded-2xl p-8">
@@ -36,12 +42,13 @@ export default function BookEvent() {
           Price: KES {event.price}
         </p>
 
-        {/* Booking button placeholder */}
-        <button className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-500 transition">
+        <button
+          onClick={handleBooking}
+          className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-500 transition"
+        >
           Proceed to Book
         </button>
       </div>
     </div>
   );
 }
-

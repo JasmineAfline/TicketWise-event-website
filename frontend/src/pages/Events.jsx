@@ -1,62 +1,53 @@
-// src/pages/Events.jsx
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import axios from "axios";
 
 export default function Events() {
   const [events, setEvents] = useState([]);
-  const navigate = useNavigate();
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchEvents = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/events"); // ✅ Adjust if needed
+        // Correct URL: /api/events
+        const res = await axios.get("http://localhost:5000/api/events");
         setEvents(res.data);
       } catch (err) {
-        console.error("Failed to fetch events:", err);
+        console.error("Error fetching events:", err);
+      } finally {
+        setLoading(false);
       }
     };
-
     fetchEvents();
   }, []);
 
-  const handleBook = (id) => {
-    navigate(`/book/${id}`); // ✅ Now used
-  };
+  if (loading) return <p className="text-center mt-10">Loading events...</p>;
+  if (events.length === 0) return <p className="text-center mt-10">No events available</p>;
 
   return (
-    <div className="bg-gray-50 text-gray-900 min-h-screen pt-24 pb-16">
-      {/* Header */}
-      <section className="text-center mb-12">
-        <h1 className="text-4xl font-bold mb-4">Upcoming Events 🎉</h1>
-        <p className="text-gray-600">
-          Browse and book your favorite events easily with Tickewise.
-        </p>
-      </section>
-
-      {/* Events Grid */}
-      <div className="container mx-auto px-6 grid md:grid-cols-2 lg:grid-cols-3 gap-10">
+    <div className="min-h-screen bg-gray-50 pt-24 pb-16">
+      <div className="container mx-auto px-6 max-w-4xl grid gap-6 sm:grid-cols-2">
         {events.map((event) => (
           <div
             key={event._id}
-            className="bg-white rounded-2xl shadow-md hover:shadow-xl transition overflow-hidden"
+            className="bg-white shadow-lg rounded-2xl p-6 flex flex-col justify-between"
           >
-            <div className="p-6">
-              <h2 className="text-xl font-semibold mb-2">{event.title}</h2>
-              <p className="text-gray-600">
-                {new Date(event.date).toLocaleDateString()}
+            <div>
+              <h2 className="text-xl font-bold mb-2">{event.title}</h2>
+              <p className="text-gray-600 mb-1">
+                Date: {new Date(event.date).toLocaleDateString()}
               </p>
-              <p className="text-gray-600">{event.location}</p>
-              <p className="text-purple-600 font-bold mt-2">
-                KES {event.price}
+              <p className="text-gray-600 mb-1">Location: {event.location}</p>
+              <p className="text-purple-600 font-bold text-lg mb-4">
+                Price: KES {event.price}
               </p>
-              <button
-                onClick={() => handleBook(event._id)} // ✅ Fixed
-                className="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg hover:bg-purple-500 transition"
-              >
-                Book Now
-              </button>
             </div>
+            <Link
+              to={`/book/${event._id}`}
+              className="mt-auto bg-purple-600 text-white px-4 py-2 rounded-lg text-center hover:bg-purple-500 transition"
+            >
+              Book Now
+            </Link>
           </div>
         ))}
       </div>

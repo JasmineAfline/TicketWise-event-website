@@ -3,7 +3,7 @@ const router = express.Router();
 const { protect } = require('../middleware/authMiddleware');
 const { authorizeRoles } = require('../middleware/roleMiddleware');
 
-// ✅ General profile route for any authenticated user
+//  General profile route for any authenticated user
 router.get('/profile', protect, (req, res) => {
   res.json({
     id: req.user.id,
@@ -13,17 +13,17 @@ router.get('/profile', protect, (req, res) => {
   });
 });
 
-// ✅ Admin-only route
+//  Admin-only route
 router.get('/admin', protect, authorizeRoles('admin'), (req, res) => {
   res.json({ message: 'Welcome Admin! Access Granted' });
 });
 
-// ✅ Employee-only route
+//  Employee-only route
 router.get('/employee', protect, authorizeRoles('employee'), (req, res) => {
   res.json({ message: 'Welcome Employee!' });
 });
 
-// ✅ User-only route
+//  User-only route
 router.get('/user', protect, authorizeRoles('user'), (req, res) => {
   res.json({ message: 'Welcome User!' });
 });
