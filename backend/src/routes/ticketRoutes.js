@@ -1,73 +1,67 @@
-// backend/src/routes/ticketRoutes.js
+// backend/routes/ticketRoutes.js
 const express = require("express");
 const router = express.Router();
+const { getToken } = require("../utils/mpesaAuth");
+const axios = require("axios");
 const Ticket = require("../models/Ticket");
 const Event = require("../models/Event");
-const { protect } = require("../middleware/authMiddleware");
 
-//  Buy Ticket
-router.post("/buy/:eventId", protect, async (req, res) => {
+// Buy ticket
+router.post("/buy", async (req, res) => {
+  const { phone, eventId } = req.body;
+
   try {
-    const { eventId } = req.params;
-
-    // ✅ Validate ObjectId before querying
-    if (!eventId || eventId.length !== 24) {
-      return res.status(400).json({ message: "Invalid event ID" });
-    }
-
+    // Find event
     const event = await Event.findById(eventId);
-    if (!event) return res.status(404).json({ message: "Event not found" });
+    if (!event) return res.status(404).json({ error: "Event not found" });
 
-    // Create ticket
+    // Get Mpesa token
+    const token = await getToken();
+
+    // Safaricom STK push (test with sandbox)
+    const shortCode = process.env.MPESA_SHORTCODE;
+    const passkey = process.env.MPESA_PASSKEY;
+    const timestamp = new Date()
+      .toISOString()
+      .replace(/[-:.TZ]/g, "")
+      .slice(0, 14);
+    const password = Buffer.from(shortCode + passkey + timestamp).toString("base64");
+
+    const stkResponse = await axios.post(
+      "https://sandbox.safaricom.co.ke/mpesa/stkpush/v1/processrequest",
+      {
+        BusinessShortCode: shortCode,
+        Password: password,
+        Timestamp: timestamp,
+        TransactionType: "CustomerPayBillOnline",
+        Amount: event.price,
+        PartyA: phone, // Customer’s phone
+        PartyB: shortCode,
+        PhoneNumber: phone,
+        CallBackURL: "https://your-backend.com/api/tickets/callback",
+        AccountReference: event.title,
+        TransactionDesc: `Ticket for ${event.title}`,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    // Save ticket (pending payment)
     const ticket = new Ticket({
-      user: req.user.id,
       event: event._id,
-      price: event.price,
-      status: "paid", // simulate instant payment
-      mpesaReceipt: `SIMULATED-${Date.now()}`,
+      userPhone: phone,
+      status: "pending",
     });
-
     await ticket.save();
 
-    res.status(201).json({ message: "Ticket created & paid successfully", ticket });
+    res.json({
+      message: "STK push sent. Complete payment on your phone.",
+      checkoutRequestID: stkResponse.data.CheckoutRequestID,
+    });
   } catch (err) {
-    console.error("Buy ticket error:", err);
-    res.status(500).json({ message: "Failed to create ticket", error: err.message });
-  }
-});
-
-//  Cancel Ticket
-router.post("/cancel/:ticketId", protect, async (req, res) => {
-  try {
-    const ticket = await Ticket.findById(req.params.ticketId);
-    if (!ticket) return res.status(404).json({ message: "Ticket not found" });
-
-    if (ticket.user.toString() !== req.user.id) {
-      return res.status(401).json({ message: "Not authorized" });
-    }
-
-    if (ticket.status === "paid" || ticket.status === "unpaid") {
-      ticket.status = "cancelled";
-    } else {
-      return res.json({ message: "Ticket already cancelled", ticket });
-    }
-
-    await ticket.save();
-    res.json({ message: "Ticket cancelled/refunded successfully", ticket });
-  } catch (err) {
-    console.error("Cancel ticket error:", err);
-    res.status(500).json({ message: "Failed to cancel ticket", error: err.message });
-  }
-});
-
-//  View My Tickets
-router.get("/mytickets", protect, async (req, res) => {
-  try {
-    const tickets = await Ticket.find({ user: req.user.id }).populate("event");
-    res.json(tickets);
-  } catch (err) {
-    console.error("Get tickets error:", err);
-    res.status(500).json({ message: "Failed to fetch tickets", error: err.message });
+    console.error("Ticket purchase failed:", err.response?.data || err.message);
+    res.status(500).json({ error: "Payment failed" });
   }
 });
 

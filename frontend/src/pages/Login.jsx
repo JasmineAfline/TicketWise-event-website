@@ -1,12 +1,16 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = () => {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const [message, setMessage] = useState("");
   const navigate = useNavigate();
+  const { setUser } = useAuth();
 
-  const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -25,6 +29,7 @@ const Login = () => {
       // Save token & role
       localStorage.setItem("token", data.token);
       localStorage.setItem("role", data.role);
+      setUser({ role: data.role, token: data.token });
 
       // Redirect based on role
       if (data.role === "admin") navigate("/admin");
@@ -32,19 +37,59 @@ const Login = () => {
       else navigate("/user");
     } catch (err) {
       setMessage(err.message);
-      console.error(err);
     }
   };
 
   return (
-    <div className="max-w-md mx-auto mt-10 p-5 border rounded shadow">
-      <h2 className="text-2xl mb-5">Login</h2>
-      {message && <p className="mb-3 text-red-500">{message}</p>}
-      <form onSubmit={handleSubmit} className="flex flex-col gap-3">
-        <input type="email" name="email" placeholder="Email" value={formData.email} onChange={handleChange} required />
-        <input type="password" name="password" placeholder="Password" value={formData.password} onChange={handleChange} required />
-        <button type="submit" className="bg-green-500 text-white p-2 rounded">Login</button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
+      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
+          Login to Your Account
+        </h2>
+
+        {message && (
+          <p className="mb-4 text-center text-red-500 font-medium">{message}</p>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+
+          <button
+            type="submit"
+            className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition font-semibold"
+          >
+            Login
+          </button>
+        </form>
+
+        <p className="mt-6 text-center text-gray-600 text-sm">
+          Don’t have an account?{" "}
+          <a
+            href="/register"
+            className="text-green-600 hover:underline font-medium"
+          >
+            Register
+          </a>
+        </p>
+      </div>
     </div>
   );
 };

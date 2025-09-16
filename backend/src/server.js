@@ -7,7 +7,6 @@ const eventRoutes = require('./routes/eventRoutes');
 const protectedRoutes = require('./routes/protectedRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
 const reportsRoutes = require('./routes/reports');
-const flightRoutes = require('./routes/flightRoutes');
 const paymentRoutes = require("./routes/paymentRoutes");
 
 
@@ -29,7 +28,6 @@ app.use('/api/events', eventRoutes);
 app.use('/api/protected', protectedRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/reports', reportsRoutes);
-app.use('/api/flights', flightRoutes);
 app.use("/api/payments", paymentRoutes);
 
 
