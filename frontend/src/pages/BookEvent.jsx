@@ -7,6 +7,9 @@ export default function BookEvent() {
   const navigate = useNavigate();
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [phone, setPhone] = useState("");
+  const [quantity, setQuantity] = useState(1);
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     const fetchEvent = async () => {
@@ -25,9 +28,30 @@ export default function BookEvent() {
   if (loading) return <p className="text-center mt-10">Loading event...</p>;
   if (!event) return <p className="text-center mt-10">Event not found</p>;
 
-  const handleBooking = () => {
-    // Navigate to the checkout page with the event id
-    navigate(`/checkout/${id}`);
+  // ✅ Handle checkout with STK Push
+  const handlePayment = async () => {
+    try {
+      setProcessing(true);
+
+      const amount = event.price * quantity; // ✅ Calculate amount here
+
+      const res = await axios.post("http://localhost:5000/api/payments/initiate", {
+        eventId: id,
+        phoneNumber: phone,
+        amount, // ✅ send amount instead of quantity
+      });
+
+      alert("✅ STK Push sent. Enter your PIN on phone.");
+      console.log("STK Response:", res.data);
+
+      // Optionally redirect
+      navigate("/");
+    } catch (err) {
+      console.error("❌ Payment failed:", err.response?.data || err.message);
+      alert("❌ Failed to initiate payment. Try again.");
+    } finally {
+      setProcessing(false);
+    }
   };
 
   return (
@@ -42,11 +66,37 @@ export default function BookEvent() {
           Price: KES {event.price}
         </p>
 
+        {/* Phone Input */}
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium">Phone Number</label>
+          <input
+            type="text"
+            placeholder="2547XXXXXXXX"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className="w-full border px-3 py-2 rounded-lg"
+          />
+        </div>
+
+        {/* Quantity Input */}
+        <div className="mb-4">
+          <label className="block mb-1 text-sm font-medium">Quantity</label>
+          <input
+            type="number"
+            min="1"
+            value={quantity}
+            onChange={(e) => setQuantity(Number(e.target.value))}
+            className="w-full border px-3 py-2 rounded-lg"
+          />
+        </div>
+
+        {/* Pay Button */}
         <button
-          onClick={handleBooking}
-          className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-500 transition"
+          onClick={handlePayment}
+          disabled={processing}
+          className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-500 transition disabled:bg-gray-400"
         >
-          Proceed to Book
+          {processing ? "Processing..." : "Pay with M-Pesa"}
         </button>
       </div>
     </div>

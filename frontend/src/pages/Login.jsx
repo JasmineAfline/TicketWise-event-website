@@ -32,9 +32,9 @@ const Login = () => {
       setUser({ role: data.role, token: data.token });
 
       // Redirect based on role
-      if (data.role === "admin") navigate("/admin");
-      else if (data.role === "employee") navigate("/employee");
-      else navigate("/user");
+      if (data.role === "admin") navigate("/Dashboard");
+      else if (data.role === "employee") navigate("/Dashboard");
+      else navigate("/Dashboard");
     } catch (err) {
       setMessage(err.message);
     }

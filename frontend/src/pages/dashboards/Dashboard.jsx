@@ -25,7 +25,7 @@ const Dashboard = () => {
       ? [{ name: "View Events", icon: <FiList />, path: "/employee/view-events" }]
       : []),
     ...(user.role === "user"
-      ? [{ name: "Book Event", icon: <FiBookOpen />, path: "/user/book-event" }]
+      ? [{ name: "Book Event", icon: <FiBookOpen />, path: "/user/" }]
       : []),
   ];
 

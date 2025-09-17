@@ -8,6 +8,7 @@ const protectedRoutes = require('./routes/protectedRoutes');
 const ticketRoutes = require('./routes/ticketRoutes');
 const reportsRoutes = require('./routes/reports');
 const paymentRoutes = require("./routes/paymentRoutes");
+const stkPushRoutes = require("./routes/stkPushRoutes");
 
 
 
@@ -21,6 +22,7 @@ app.use(cors({ origin: "http://localhost:3000", credentials: true }));
 
 // JSON parser
 app.use(express.json({ strict: false }));
+app.use("/api/mpesa", stkPushRoutes);
 
 // Routes
 app.use('/api/auth', authRoutes);

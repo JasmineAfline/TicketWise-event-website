@@ -19,7 +19,7 @@ import Checkout from "./pages/Checkout";
 import AddEvent from "./AddEvent";
 import ManageEvents from "./ManageEvents";
 import ViewEvents from "./ViewEvents";
-import BookEvent from "./BookEvent";
+import BookEvent from "./pages/BookEvent";
 
 // Unified Dashboard (directly in src/)
 import Dashboard from "./pages/dashboards/Dashboard";
@@ -85,14 +85,6 @@ function App() {
         element={
           <ProtectedRoute allowedRoles={["employee"]}>
             <ViewEvents />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/user/book-event"
-        element={
-          <ProtectedRoute allowedRoles={["user"]}>
-            <BookEvent />
           </ProtectedRoute>
         }
       />
