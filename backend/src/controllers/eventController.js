@@ -1,109 +1,82 @@
 const Event = require("../models/Event");
 
-// @desc Create Event(s)
-// @route POST /api/events
-// @access Employee/Admin
-const createEvent = async (req, res) => {
+// ==========================
+// Create Event (Admin/Employee)
+// ==========================
+exports.createEvent = async (req, res) => {
   try {
-    const data = req.body;
+    const { title, description, location, date, time, price } = req.body;
 
-    //  Check if multiple events (array)
-    if (Array.isArray(data)) {
-      // Add createdBy for each event
-      const eventsWithUser = data.map((ev) => ({
-        ...ev,
-        createdBy: req.user.id,
-      }));
-
-      const events = await Event.insertMany(eventsWithUser);
-      return res.status(201).json(events);
-    }
-
-    //  Single event
-    let event = await Event.create({
-      ...data,
-      createdBy: req.user.id, // from auth middleware
+    const event = await Event.create({
+      title,
+      description,
+      location,
+      date,
+      time,
+      price,
+     createdBy: req.user ? req.user._id : null, // from protect middleware
     });
 
-    event = await event.populate("createdBy", "name email role");
-    res.status(201).json(event);
+    res.status(201).json({ message: "Event created", event });
   } catch (error) {
-    res.status(500).json({ message: "Error creating event", error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// @desc Get All Events
-// @route GET /api/events
-// @access Public
-const getEvents = async (req, res) => {
+// ==========================
+// Get all events (public)
+// ==// Get all events (public)
+exports.getAllEvents = async (req, res) => {
   try {
-    const events = await Event.find()
-      .populate("createdBy", "name email role")
-      .sort({ date: 1 });
+    // Populate createdBy only if it exists
+    const events = await Event.find().populate({
+      path: "createdBy",
+      select: "name email role",
+      strictPopulate: false, // prevents errors if createdBy is null
+    });
 
-    res.json(events);
+    res.status(200).json(events);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching events", error: error.message });
+    console.error("Error fetching events:", error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// @desc Get Single Event by ID
-// @route GET /api/events/:id
-// @access Public
-const getEventById = async (req, res) => {
+// ==========================
+// Get single event by ID
+// ==========================
+exports.getEventById = async (req, res) => {
   try {
-    const event = await Event.findById(req.params.id)
-      .populate("createdBy", "name email role");
-
+    const event = await Event.findById(req.params.id).populate(
+      "createdBy",
+      "name email role"
+    );
     if (!event) return res.status(404).json({ message: "Event not found" });
-
-    res.json(event);
+    res.status(200).json(event);
   } catch (error) {
-    res.status(500).json({ message: "Error fetching event", error: error.message });
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
   }
 };
 
-// @desc Update Event
-// @route PUT /api/events/:id
-// @access Employee/Admin
-const updateEvent = async (req, res) => {
-  try {
-    let event = await Event.findById(req.params.id);
-    if (!event) return res.status(404).json({ message: "Event not found" });
-
-    // Only creator or admin can update
-    if (event.createdBy.toString() !== req.user.id && req.user.role !== "admin") {
-      return res.status(403).json({ message: "Not authorized to update this event" });
-    }
-
-    event = await Event.findByIdAndUpdate(req.params.id, req.body, { new: true })
-      .populate("createdBy", "name email role");
-
-    res.json(event);
-  } catch (error) {
-    res.status(500).json({ message: "Error updating event", error: error.message });
-  }
-};
-
-// @desc Delete Event
-// @route DELETE /api/events/:id
-// @access Admin only
-const deleteEvent = async (req, res) => {
+// ==========================
+// Delete Event (Admin/Employee who created it)
+// ==========================
+exports.deleteEvent = async (req, res) => {
   try {
     const event = await Event.findById(req.params.id);
     if (!event) return res.status(404).json({ message: "Event not found" });
 
-    await event.deleteOne();
-    res.json({ message: "Event removed successfully" });
-  } catch (error) {
-    res.status(500).json({ message: "Error deleting event", error: error.message });
-  }
-};
+    // Only admin or creator can delete
+    if (req.user.role !== "admin" && !event.createdBy.equals(req.user._id)) {
+      return res.status(403).json({ message: "Forbidden: Not allowed" });
+    }
 
-module.exports = {
-  createEvent,
-  getEvents,
-  getEventById,
-  updateEvent,
-  deleteEvent,
+    await event.remove();
+    res.status(200).json({ message: "Event deleted successfully" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
 };

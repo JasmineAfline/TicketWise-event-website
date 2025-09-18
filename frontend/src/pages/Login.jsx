@@ -1,54 +1,44 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import { Eye, EyeOff } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom"; // Import Link
 
 const Login = () => {
-  const [formData, setFormData] = useState({ email: "", password: "" });
-  const [message, setMessage] = useState("");
+  const { login } = useAuth();
   const navigate = useNavigate();
-  const { setUser } = useAuth();
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [message, setMessage] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMessage("");
 
     try {
-      const response = await fetch("http://localhost:5000/api/auth/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Login failed");
-
-      // Save token & role
-      localStorage.setItem("token", data.token);
-      localStorage.setItem("role", data.role);
-      setUser({ role: data.role, token: data.token });
+      const user = await login(email, password);
+      if (!user) {
+        setMessage("Invalid email or password");
+        return;
+      }
 
       // Redirect based on role
-      if (data.role === "admin") navigate("/Dashboard");
-      else if (data.role === "employee") navigate("/Dashboard");
-      else navigate("/Dashboard");
+      if (user.role === "admin") navigate("/admin/dashboard");
+      else if (user.role === "employee") navigate("/dashboard");
+      else navigate("/dashboard");
     } catch (err) {
-      setMessage(err.message);
+      setMessage(err.message || "Login failed");
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div className="w-full max-w-md bg-white p-8 rounded-xl shadow-lg">
-        <h2 className="text-2xl font-bold text-center text-gray-800 mb-6">
-          Login to Your Account
-        </h2>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-md bg-white p-6 rounded-xl shadow-md">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Login</h2>
 
         {message && (
-          <p className="mb-4 text-center text-red-500 font-medium">{message}</p>
+          <p className="mb-4 text-center text-red-600">{message}</p>
         )}
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
@@ -56,38 +46,46 @@ const Login = () => {
             type="email"
             name="email"
             placeholder="Email"
-            value={formData.email}
-            onChange={handleChange}
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
-            className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
           />
-
-          <input
-            type="password"
-            name="password"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-            required
-            className="p-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              name="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className="border rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <span
+              className="absolute right-3 top-1/2 transform -translate-y-1/2 cursor-pointer text-gray-500"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+            </span>
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-green-500 hover:bg-green-600 text-white py-3 rounded-lg transition font-semibold"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded transition-colors"
           >
             Login
           </button>
         </form>
 
-        <p className="mt-6 text-center text-gray-600 text-sm">
-          Don’t have an account?{" "}
-          <a
-            href="/register"
-            className="text-green-600 hover:underline font-medium"
+        {/* Sign Up link below the login button */}
+        <p className="mt-4 text-center text-gray-600">
+          Don't have an account?{" "}
+          <Link
+            to="/register"
+            className="text-blue-500 hover:underline font-semibold cursor-pointer"
           >
-            Register
-          </a>
+            Sign Up
+          </Link>
         </p>
       </div>
     </div>

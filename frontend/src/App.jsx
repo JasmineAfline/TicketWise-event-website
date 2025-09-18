@@ -1,7 +1,8 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
+import { useAuth } from "./context/AuthContext";
 
 // Pages
 import LandingPage from "./pages/LandingPage";
@@ -14,14 +15,9 @@ import Unauthorized from "./pages/Unauthorized";
 import EventDetails from "./pages/EventDetails";
 import CreateEvent from "./pages/CreateEvent";
 import Checkout from "./pages/Checkout";
-
-// Event-related Pages (directly in src/)
-import AddEvent from "./AddEvent";
-import ManageEvents from "./ManageEvents";
-import ViewEvents from "./ViewEvents";
 import BookEvent from "./pages/BookEvent";
 
-// Unified Dashboard (directly in src/)
+// Unified Dashboard
 import Dashboard from "./pages/dashboards/Dashboard";
 
 // Layout wrapper for pages with Navbar + Footer
@@ -34,6 +30,14 @@ const Layout = ({ children }) => (
 );
 
 function App() {
+  const { user } = useAuth();
+
+  // Role-based redirect after login
+  const getDashboardRedirect = () => {
+    if (!user) return "/login";
+    return "/dashboard"; // Unified Dashboard handles role internally
+  };
+
   return (
     <Routes>
       {/* Public Pages */}
@@ -49,45 +53,30 @@ function App() {
       <Route path="/checkout/:id" element={<Layout><Checkout /></Layout>} />
 
       {/* Auth */}
-      <Route path="/login" element={<Layout><Login /></Layout>} />
-      <Route path="/register" element={<Layout><Register /></Layout>} />
-      <Route path="/unauthorized" element={<Unauthorized />} />
+      <Route
+        path="/login"
+        element={user ? <Navigate to={getDashboardRedirect()} replace /> : <Layout><Login /></Layout>}
+      />
+      <Route
+        path="/register"
+        element={user ? <Navigate to={getDashboardRedirect()} replace /> : <Layout><Register /></Layout>}
+      />
+      <Route path="/unauthorized" element={<Layout><Unauthorized /></Layout>} />
 
       {/* Protected Unified Dashboard */}
       <Route
         path="/dashboard"
         element={
-          <ProtectedRoute allowedRoles={["admin", "employee", "user"]}>
-            <Dashboard />
-          </ProtectedRoute>
+          <Layout>
+            <ProtectedRoute allowedRoles={["admin", "employee", "user"]}>
+              <Dashboard />
+            </ProtectedRoute>
+          </Layout>
         }
       />
 
-      {/* Protected Event Pages */}
-      <Route
-        path="/admin/add-event"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <AddEvent />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/admin/manage-events"
-        element={
-          <ProtectedRoute allowedRoles={["admin"]}>
-            <ManageEvents />
-          </ProtectedRoute>
-        }
-      />
-      <Route
-        path="/employee/view-events"
-        element={
-          <ProtectedRoute allowedRoles={["employee"]}>
-            <ViewEvents />
-          </ProtectedRoute>
-        }
-      />
+      {/* Catch-all redirect */}
+      <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
 }

@@ -1,104 +1,104 @@
-import { useParams, useNavigate } from "react-router-dom";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useAuth } from "../context/AuthContext";
 
-export default function BookEvent() {
-  const { id } = useParams(); // grab event id from URL
-  const navigate = useNavigate();
-  const [event, setEvent] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [phone, setPhone] = useState("");
-  const [quantity, setQuantity] = useState(1);
-  const [processing, setProcessing] = useState(false);
+const Booking = () => {
+  const { token } = useAuth();
+  const [bookings, setBookings] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const fetchBookings = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get("http://localhost:5000/api/bookings/my", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setBookings(res.data.bookings);
+    } catch (err) {
+      setMessage(err.response?.data?.message || "Failed to fetch bookings");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchEvent = async () => {
-      try {
-        const res = await axios.get(`http://localhost:5000/api/events/${id}`);
-        setEvent(res.data);
-      } catch (err) {
-        console.error("Error fetching event:", err);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchEvent();
-  }, [id]);
+    fetchBookings();
+  }, []);
 
-  if (loading) return <p className="text-center mt-10">Loading event...</p>;
-  if (!event) return <p className="text-center mt-10">Event not found</p>;
-
-  // ✅ Handle checkout with STK Push
-  const handlePayment = async () => {
+  const handleCancel = async (id) => {
+    if (!window.confirm("Are you sure you want to cancel this booking?")) return;
     try {
-      setProcessing(true);
-
-      const amount = event.price * quantity; // ✅ Calculate amount here
-
-      const res = await axios.post("http://localhost:5000/api/payments/initiate", {
-        eventId: id,
-        phoneNumber: phone,
-        amount, // ✅ send amount instead of quantity
+      await axios.delete(`http://localhost:5000/api/bookings/${id}`, {
+        headers: { Authorization: `Bearer ${token}` },
       });
-
-      alert("✅ STK Push sent. Enter your PIN on phone.");
-      console.log("STK Response:", res.data);
-
-      // Optionally redirect
-      navigate("/");
+      setBookings((prev) => prev.filter((b) => b._id !== id));
+      setMessage("Booking cancelled successfully");
     } catch (err) {
-      console.error("❌ Payment failed:", err.response?.data || err.message);
-      alert("❌ Failed to initiate payment. Try again.");
-    } finally {
-      setProcessing(false);
+      setMessage(err.response?.data?.message || "Failed to cancel booking");
     }
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-24 pb-16">
-      <div className="container mx-auto px-6 max-w-2xl bg-white shadow-lg rounded-2xl p-8">
-        <h1 className="text-3xl font-bold mb-4">{event.title}</h1>
-        <p className="text-gray-600 mb-2">
-          Date: {new Date(event.date).toLocaleDateString()}
-        </p>
-        <p className="text-gray-600 mb-2">Location: {event.location}</p>
-        <p className="text-purple-600 font-bold text-lg mb-6">
-          Price: KES {event.price}
-        </p>
+    <div className="min-h-screen p-4 bg-gray-50">
+      <div className="max-w-5xl mx-auto">
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">My Bookings</h1>
 
-        {/* Phone Input */}
-        <div className="mb-4">
-          <label className="block mb-1 text-sm font-medium">Phone Number</label>
-          <input
-            type="text"
-            placeholder="2547XXXXXXXX"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full border px-3 py-2 rounded-lg"
-          />
-        </div>
+        {message && (
+          <p
+            className={`mb-4 text-center ${
+              message.includes("success") ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {message}
+          </p>
+        )}
 
-        {/* Quantity Input */}
-        <div className="mb-4">
-          <label className="block mb-1 text-sm font-medium">Quantity</label>
-          <input
-            type="number"
-            min="1"
-            value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-            className="w-full border px-3 py-2 rounded-lg"
-          />
-        </div>
+        {loading ? (
+          <p className="text-center">Loading bookings...</p>
+        ) : bookings.length === 0 ? (
+          <p className="text-center text-gray-600">No bookings found</p>
+        ) : (
+          <div className="grid md:grid-cols-2 gap-4">
+            {bookings.map((booking) => (
+              <div key={booking._id} className="bg-white p-4 rounded shadow flex flex-col justify-between">
+                <div>
+                  <h3 className="text-xl font-bold mb-1">{booking.event.title}</h3>
+                  <p className="text-gray-700 mb-1">{booking.event.description}</p>
+                  <p className="text-gray-500 text-sm">
+                    Date: {booking.event.date} | Time: {booking.event.time}
+                  </p>
+                  <p className="text-gray-500 text-sm">Location: {booking.event.location}</p>
+                  <p className="text-gray-500 text-sm font-semibold">Price: KSh {booking.event.price}</p>
+                  <p className="mt-2 font-medium">
+                    Status:{" "}
+                    <span
+                      className={`${
+                        booking.status === "paid" ? "text-green-600" : "text-yellow-600"
+                      }`}
+                    >
+                      {booking.status}
+                    </span>
+                  </p>
+                </div>
 
-        {/* Pay Button */}
-        <button
-          onClick={handlePayment}
-          disabled={processing}
-          className="bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-purple-500 transition disabled:bg-gray-400"
-        >
-          {processing ? "Processing..." : "Pay with M-Pesa"}
-        </button>
+                <div className="mt-3 flex gap-2">
+                  {booking.status !== "paid" && (
+                    <button
+                      onClick={() => handleCancel(booking._id)}
+                      className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded transition-colors"
+                    >
+                      Cancel
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
-}
+};
+
+export default Booking;

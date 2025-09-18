@@ -1,53 +1,123 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { useEventContext } from "../context/EventContext";
+import { useEvent } from "../context/EventContext";
+import { useAuth } from "../context/AuthContext";
 
-export default function CreateEvent() {
-  const [name, setName] = useState("");
-  const [date, setDate] = useState("");
-  const [description, setDescription] = useState("");
-  const { addEvent } = useEventContext();
-  const navigate = useNavigate();
+const CreateEvent = () => {
+  const { createEvent } = useEvent();
+  const { user } = useAuth();
 
-  const handleSubmit = (e) => {
+  const [eventData, setEventData] = useState({
+    title: "",
+    description: "",
+    date: "",
+    time: "",
+    location: "",
+    price: 0,
+  });
+
+  const [message, setMessage] = useState("");
+
+  if (!user || (user.role !== "admin" && user.role !== "employee")) {
+    return <p className="text-center mt-10 text-red-600">Access denied</p>;
+  }
+
+  const handleChange = (e) => {
+    setEventData({ ...eventData, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    addEvent({ name, date, description });
-    navigate("/events"); // redirect after creation
+    setMessage("");
+
+    try {
+      await createEvent(eventData);
+      setEventData({ title: "", description: "", date: "", time: "", location: "", price: 0 });
+      setMessage("Event created successfully!");
+    } catch (err) {
+      setMessage(err.message);
+    }
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-bold mb-4">Create New Event</h1>
-      <form onSubmit={handleSubmit} className="space-y-4 max-w-md">
-        <input
-          type="text"
-          placeholder="Event Name"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <textarea
-          placeholder="Description"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          className="w-full border p-2 rounded"
-          required
-        />
-        <button
-          type="submit"
-          className="px-6 py-2 bg-blue-600 text-white rounded"
-        >
-          Save Event
-        </button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4">
+      <div className="w-full max-w-lg bg-white p-6 rounded-xl shadow-md">
+        <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Create Event</h2>
+
+        {message && (
+          <p
+            className={`mb-4 text-center ${
+              message.includes("success") ? "text-green-600" : "text-red-600"
+            }`}
+          >
+            {message}
+          </p>
+        )}
+
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <input
+            type="text"
+            name="title"
+            placeholder="Event Title"
+            value={eventData.title}
+            onChange={handleChange}
+            required
+            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <textarea
+            name="description"
+            placeholder="Event Description"
+            value={eventData.description}
+            onChange={handleChange}
+            required
+            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <div className="flex gap-2">
+            <input
+              type="date"
+              name="date"
+              value={eventData.date}
+              onChange={handleChange}
+              required
+              className="border rounded px-3 py-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <input
+              type="time"
+              name="time"
+              value={eventData.time}
+              onChange={handleChange}
+              required
+              className="border rounded px-3 py-2 w-1/2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
+          <input
+            type="text"
+            name="location"
+            placeholder="Event Location"
+            value={eventData.location}
+            onChange={handleChange}
+            required
+            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <input
+            type="number"
+            name="price"
+            placeholder="Event Price (KSh)"
+            value={eventData.price}
+            onChange={handleChange}
+            min="0"
+            required
+            className="border rounded px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          />
+          <button
+            type="submit"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 rounded transition-colors"
+          >
+            Create Event
+          </button>
+        </form>
+      </div>
     </div>
   );
-}
+};
+
+export default CreateEvent;
