@@ -28,7 +28,7 @@ const Events = () => {
     try {
       const res = await bookEvent(eventId, phoneNumber);
       setMessage(res.message || "Booking initiated. Check your phone for STK push.");
-      fetchEvents(); // refresh events if needed
+      fetchEvents();
     } catch (err) {
       console.error(err);
       setMessage(err.message || "Failed to book event.");
@@ -45,6 +45,21 @@ const Events = () => {
     } catch (err) {
       setMessage(err.message || "Failed to delete event.");
     }
+  };
+
+  // Map event titles to your 6 images
+  const eventImages = {
+    "Charity Run": "/images/Run.jpg",
+    "Tech Conference": "/images/tech_event.jpg",
+    "Music Festival": "/images/music_festival.jpg",
+    "Food Carnival": "/images/food_carnival.jpg",
+    "Tech Expo": "/images/Tech.jpg",
+    "Music Concert": "/images/Music.jpg",
+    "Summer Music Festival": "/images/Music.jpg", 
+  };
+
+  const getImagePath = (title) => {
+    return eventImages[title] || "/images/Tech.jpg"; // fallback image
   };
 
   return (
@@ -76,10 +91,18 @@ const Events = () => {
                 className="bg-white p-4 rounded shadow flex flex-col justify-between"
               >
                 <div>
+                  {/* Event image */}
+                  <img
+                    src={getImagePath(event.title)}
+                    alt={event.title}
+                    className="w-full h-40 object-cover rounded mb-3"
+                  />
+
                   <h3 className="text-xl font-bold mb-1">{event.title}</h3>
                   <p className="text-gray-700 mb-1">{event.description}</p>
                   <p className="text-gray-500 text-sm">
-                    Date: {new Date(event.date).toLocaleDateString()} | Time: {new Date(event.date).toLocaleTimeString()}
+                    Date: {new Date(event.date).toLocaleDateString()} | Time:{" "}
+                    {new Date(event.date).toLocaleTimeString()}
                   </p>
                   <p className="text-gray-500 text-sm">Location: {event.location}</p>
                   <p className="text-gray-500 text-sm font-semibold">Price: KSh {event.price}</p>

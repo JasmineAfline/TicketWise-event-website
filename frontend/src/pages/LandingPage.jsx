@@ -45,7 +45,7 @@ export default function LandingPage() {
   {/* Hero Content */}
   <div className="relative z-10 px-6">
     <h1 className="text-5xl md:text-6xl font-bold mb-6">
-      Welcome to Tickewise 
+      Welcome to Ticketwise 
     </h1>
     <p className="text-lg md:text-xl mb-8 max-w-3xl mx-auto">
       Your all-in-one event management platform. Discover, book, and
