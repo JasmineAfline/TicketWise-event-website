@@ -77,7 +77,7 @@ const Login = () => {
           </button>
         </form>
 
-        {/* Sign Up link below the login button */}
+        
         <p className="mt-4 text-center text-gray-600">
           Don't have an account?{" "}
           <Link

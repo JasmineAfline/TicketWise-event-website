@@ -1,3 +1,171 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom CSS for TicketWise Enhancements */
+
+/* Gradient Backgrounds */
+.gradient-bg {
+  background: linear-gradient(135deg, #0D1B2A 0%, #1B74E4 25%, #8E44AD 50%, #FF6B81 75%, #0D1B2A 100%);
+  background-size: 400% 400%;
+  animation: gradientShift 8s ease infinite;
+}
+
+@keyframes gradientShift {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Glowing Effects */
+.glow {
+  box-shadow: 0 0 20px rgba(255, 107, 129, 0.5);
+  transition: box-shadow 0.3s ease;
+}
+
+.glow:hover {
+  box-shadow: 0 0 30px rgba(255, 107, 129, 0.8);
+}
+
+/* Ripple Effect for Buttons */
+.ripple {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  transform: translate(-50%, -50%);
+  transition: width 0.6s, height 0.6s;
+}
+
+.ripple:active::before {
+  width: 300px;
+  height: 300px;
+}
+
+/* Hover Lift Effect */
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-10px);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+}
+
+/* Fade-in Animation */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Slide-in Animation */
+.slide-in-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.slide-in-left.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+.slide-in-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.slide-in-right.visible {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Focus Animation for Inputs */
+.input-focus {
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-focus:focus {
+  border-color: #1B74E4;
+  box-shadow: 0 0 0 3px rgba(27, 116, 228, 0.1);
+}
+
+/* Star Rating */
+.star-rating {
+  display: flex;
+  gap: 2px;
+}
+
+.star {
+  color: #FFD700;
+  font-size: 1.2rem;
+}
+
+/* Badge Styles */
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.badge-popular {
+  background: linear-gradient(45deg, #FF6B81, #FF8E53);
+  color: white;
+}
+
+.badge-sold-out {
+  background: linear-gradient(45deg, #8E44AD, #FF6B81);
+  color: white;
+}
+
+/* Transparent Navbar */
+.navbar-transparent {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Active Link Indicator */
+.nav-link {
+  position: relative;
+  transition: color 0.3s ease;
+}
+
+.nav-link.active::after {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: linear-gradient(90deg, #1B74E4, #8E44AD);
+  border-radius: 1px;
+}
+
+/* Smooth Hover Transitions */
+.smooth-hover {
+  transition: all 0.3s ease;
+}
+
+.smooth-hover:hover {
+  transform: scale(1.05);
+}
