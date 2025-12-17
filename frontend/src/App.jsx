@@ -19,6 +19,8 @@ import BookEvent from "./pages/BookEvent";
 
 // Unified Dashboard
 import Dashboard from "./pages/dashboards/Dashboard";
+import Reports from "./pages/Reports";
+
 
 // Layout wrapper for pages with Navbar + Footer
 const Layout = ({ children }) => (
@@ -47,6 +49,8 @@ function App() {
       <Route path="/events/:id" element={<Layout><EventDetails /></Layout>} />
       <Route path="/create" element={<Layout><CreateEvent /></Layout>} />
       <Route path="/contact" element={<Layout><Contact /></Layout>} />
+      <Route path="/reports" element={<Layout><Reports /></Layout>} />
+
 
       {/* Booking & Checkout */}
       <Route path="/book/:id" element={<Layout><BookEvent /></Layout>} />

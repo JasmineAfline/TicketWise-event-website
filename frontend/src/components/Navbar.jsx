@@ -28,16 +28,15 @@ export default function Navbar() {
   const isActive = (path) => location.pathname === path;
 
   return (
-    <nav className={`fixed w-full z-50 top-0 left-0 transition-all duration-300 ${
-      isScrolled ? 'navbar-transparent' : 'bg-white shadow-md'
-    }`}>
+    <nav className={`fixed w-full z-50 top-0 left-0 transition-all duration-300 ${isScrolled ? 'navbar-transparent' : 'bg-white shadow-md'
+      }`}>
       <div className="container mx-auto px-6 py-4 flex justify-between items-center">
         {/* Logo */}
         <Link to="/" className="text-2xl font-bold text-purple-600 smooth-hover">
           Tickewise
         </Link>
 
-        {/* Desktop Menu */}
+
         <div className="hidden md:flex gap-6 items-center">
           <Link
             to="/"
