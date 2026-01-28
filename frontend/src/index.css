@@ -313,3 +313,6 @@ html {
   -webkit-box-orient: vertical;
   overflow: hidden;
 }
+@tailwind base; 
+@tailwind components; 
+@tailwind utilities; 
