@@ -91,7 +91,19 @@ export const EventProvider = ({ children }) => {
 
   // Fetch events on mount
   useEffect(() => {
-    fetchEvents();
+    const fetch = async () => {
+      setLoading(true);
+      try {
+        const res = await axiosInstance.get("/events");
+        setEvents(res.data.events || res.data);
+      } catch (err) {
+        console.error("Error fetching events:", err);
+        setEvents([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetch();
   }, []);
 
   return (

@@ -1,6 +1,8 @@
 const User = require("../models/User");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const crypto = require("crypto");
+const { sendPasswordResetEmail } = require("../utils/emailService");
 
 // ==========================
 // Generate JWT token
@@ -110,6 +112,113 @@ exports.deleteUser = async (req, res) => {
     res.status(200).json({ message: "User deleted successfully" });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ==========================
+// Forgot Password
+// ==========================
+exports.forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({ message: "Please provide an email address" });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: "No account found with that email address" });
+    }
+
+    // Generate reset token
+    const resetToken = user.getResetPasswordToken();
+
+    // Save user with reset token
+    await user.save({ validateBeforeSave: false });
+
+    // Send email
+    const emailResult = await sendPasswordResetEmail(email, resetToken);
+
+    if (!emailResult.success) {
+      // If email fails, clear the reset token
+      user.resetPasswordToken = undefined;
+      user.resetPasswordExpire = undefined;
+      await user.save({ validateBeforeSave: false });
+
+      return res.status(500).json({ 
+        message: "Email could not be sent. Please try again later.",
+        error: emailResult.error 
+      });
+    }
+
+    res.status(200).json({
+      message: "Password reset email sent successfully. Please check your inbox.",
+    });
+  } catch (error) {
+    console.error("Forgot password error:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+// ==========================
+// Reset Password
+// ==========================
+exports.resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    if (!password) {
+      return res.status(400).json({ message: "Please provide a new password" });
+    }
+
+    if (password.length < 6) {
+      return res.status(400).json({ message: "Password must be at least 6 characters" });
+    }
+
+    // Hash the token from URL to compare with stored hashed token
+    const resetPasswordToken = crypto
+      .createHash("sha256")
+      .update(token)
+      .digest("hex");
+
+    // Find user with valid token and not expired
+    const user = await User.findOne({
+      resetPasswordToken,
+      resetPasswordExpire: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({ 
+        message: "Invalid or expired reset token. Please request a new password reset." 
+      });
+    }
+
+    // Set new password (will be hashed by pre-save hook)
+    user.password = password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
+
+    await user.save();
+
+    // Generate new JWT token
+    const jwtToken = generateToken(user._id);
+
+    res.status(200).json({
+      message: "Password reset successful",
+      token: jwtToken,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role,
+      },
+    });
+  } catch (error) {
+    console.error("Reset password error:", error);
     res.status(500).json({ message: "Server error" });
   }
 };

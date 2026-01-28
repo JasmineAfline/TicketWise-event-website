@@ -1,4 +1,5 @@
-import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -11,10 +12,11 @@ import Events from "./pages/Events";
 import Contact from "./pages/Contact";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 import Unauthorized from "./pages/Unauthorized";
 import EventDetails from "./pages/EventDetails";
 import CreateEvent from "./pages/CreateEvent";
-import Checkout from "./pages/Checkout";
 import BookEvent from "./pages/BookEvent";
 
 // Unified Dashboard
@@ -33,6 +35,12 @@ const Layout = ({ children }) => (
 
 function App() {
   const { user } = useAuth();
+  const location = useLocation();
+
+  // Scroll to top on route change
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   // Role-based redirect after login
   const getDashboardRedirect = () => {
@@ -52,9 +60,8 @@ function App() {
       <Route path="/reports" element={<Layout><Reports /></Layout>} />
 
 
-      {/* Booking & Checkout */}
+      {/* Bookings */}
       <Route path="/book/:id" element={<Layout><BookEvent /></Layout>} />
-      <Route path="/checkout/:id" element={<Layout><Checkout /></Layout>} />
 
       {/* Auth */}
       <Route
@@ -64,6 +71,14 @@ function App() {
       <Route
         path="/register"
         element={user ? <Navigate to={getDashboardRedirect()} replace /> : <Layout><Register /></Layout>}
+      />
+      <Route
+        path="/forgot-password"
+        element={user ? <Navigate to={getDashboardRedirect()} replace /> : <Layout><ForgotPassword /></Layout>}
+      />
+      <Route
+        path="/reset-password/:token"
+        element={user ? <Navigate to={getDashboardRedirect()} replace /> : <Layout><ResetPassword /></Layout>}
       />
       <Route path="/unauthorized" element={<Layout><Unauthorized /></Layout>} />
 

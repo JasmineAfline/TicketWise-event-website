@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
     fetchUser();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   // Role-based redirect

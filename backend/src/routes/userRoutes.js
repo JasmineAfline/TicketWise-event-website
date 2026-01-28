@@ -5,12 +5,16 @@ const {
   loginUser,
   getAllUsers,
   deleteUser,
+  forgotPassword,
+  resetPassword,
 } = require("../controllers/userController");
 const { protect, authorize } = require("../middleware/authMiddleware");
 
 // Public routes
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
 
 // Protected route to get logged-in user
 router.get("/me", protect, (req, res) => {

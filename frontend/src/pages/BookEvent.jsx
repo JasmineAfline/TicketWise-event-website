@@ -8,23 +8,22 @@ const Booking = () => {
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
 
-  const fetchBookings = async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get("http://localhost:5000/api/bookings/my", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setBookings(res.data.bookings);
-    } catch (err) {
-      setMessage(err.response?.data?.message || "Failed to fetch bookings");
-    } finally {
-      setLoading(false);
-    }
-  };
-
   useEffect(() => {
-    fetchBookings();
-  }, []);
+    const fetchBookingsData = async () => {
+      setLoading(true);
+      try {
+        const res = await axios.get("http://localhost:5000/api/bookings/my", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setBookings(res.data.bookings);
+      } catch (err) {
+        setMessage(err.response?.data?.message || "Failed to fetch bookings");
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchBookingsData();
+  }, [token]);
 
   const handleCancel = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this booking?")) return;
