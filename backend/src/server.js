@@ -20,12 +20,7 @@ app.use(cors());
 app.use(express.json());
 
 // ========================
-// Serve static files
-// ========================
-app.use(express.static(path.join(__dirname, '..', 'public')));
-
-// ========================
-// API Routes
+// API Routes (API-only server)
 // ========================
 app.use('/api/users', userRoutes);
 app.use('/api/events', eventRoutes);
@@ -33,11 +28,9 @@ app.use('/api/bookings', bookingRoutes);
 app.use('/api/reports', reportRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 
-// ========================
-// Default route (loads homepage)
-// ========================
+// Optional: simple health check
 app.get('/', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'index.html'));
+  res.json({ status: 'OK', message: 'TicketWise API running' });
 });
 
 // ========================
