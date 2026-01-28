@@ -11,9 +11,14 @@ export const EventProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  // Use deployed backend in production, fallback to localhost in dev
+  const API_BASE_URL =
+    process.env.REACT_APP_API_URL ||
+    "https://ticketwise-backend.onrender.com/api";
+
   // Axios instance with auth header
   const axiosInstance = axios.create({
-    baseURL: process.env.REACT_APP_API_URL || "http://localhost:5000/api",
+    baseURL: API_BASE_URL,
   });
 
   axiosInstance.interceptors.request.use((config) => {
@@ -72,11 +77,11 @@ export const EventProvider = ({ children }) => {
     }
   };
 
-  // âœ… Fixed Book event
+  // Book event
   const bookEvent = async (eventId, phoneNumber) => {
     if (!user) throw new Error("You must be logged in to book an event.");
     if (!phoneNumber) throw new Error("Phone number is required for booking.");
-    
+
     try {
       const res = await axiosInstance.post("/bookings", {
         eventId,
@@ -104,6 +109,8 @@ export const EventProvider = ({ children }) => {
       }
     };
     fetch();
+    // we intentionally don't include axiosInstance in deps to avoid re-running
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -115,7 +122,7 @@ export const EventProvider = ({ children }) => {
         createEvent,
         deleteEvent,
         updateEvent,
-        bookEvent, 
+        bookEvent,
       }}
     >
       {children}
