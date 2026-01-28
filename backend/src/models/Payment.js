@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+﻿const mongoose = require("mongoose");
 
 const paymentSchema = new mongoose.Schema({
   user: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
@@ -7,9 +7,10 @@ const paymentSchema = new mongoose.Schema({
   phoneNumber: String,
   status: { type: String, enum: ["pending", "success", "failed"], default: "pending" },
   mpesaReceipt: String,
-  checkoutRequestId: String,   // 🔹 important for callback matching
+  checkoutRequestId: String,   // ðŸ”¹ important for callback matching
   rawCallback: Object,
 }, { timestamps: true });
 
-module.exports = mongoose.model("Payment", paymentSchema);
+export default mongoose.model("Payment", PaymentSchema);
+
 
