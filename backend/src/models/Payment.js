@@ -7,10 +7,10 @@ const paymentSchema = new mongoose.Schema({
   phoneNumber: String,
   status: { type: String, enum: ["pending", "success", "failed"], default: "pending" },
   mpesaReceipt: String,
-  checkoutRequestId: String,   // ðŸ”¹ important for callback matching
+  checkoutRequestId: String,
   rawCallback: Object,
 }, { timestamps: true });
 
-export default mongoose.model("Payment", PaymentSchema);
+module.exports = mongoose.model("Payment", paymentSchema);
 
 

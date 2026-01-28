@@ -57,12 +57,11 @@ userSchema.methods.getResetPasswordToken = function () {
     .createHash("sha256")
     .update(resetToken)
     .digest("hex");
-
   // Set expire time (1 hour)
   this.resetPasswordExpire = Date.now() + 60 * 60 * 1000;
 
   return resetToken;
 };
 
-export default mongoose.model("User", UserSchema);
+module.exports = mongoose.model('User', userSchema);
 

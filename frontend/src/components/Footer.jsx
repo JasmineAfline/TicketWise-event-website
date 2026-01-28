@@ -1,4 +1,5 @@
 ﻿import { Link } from "react-router-dom";
+import { FaTicketAlt } from "react-icons/fa";
 
 export default function Footer() {
   return (
@@ -6,7 +7,10 @@ export default function Footer() {
       <div className="container mx-auto px-6 grid md:grid-cols-3 gap-10">
         {/* Brand Info */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-4">Tickewise ðŸŽŸï¸</h2>
+          <h2 className="text-2xl font-bold text-white mb-4 flex items-center gap-2">
+            <FaTicketAlt className="text-purple-400" />
+            Tickewise
+          </h2>
           <p className="text-gray-400">
             Your trusted platform for discovering, booking, and managing events
             with ease. Bringing people together, one event at a time.

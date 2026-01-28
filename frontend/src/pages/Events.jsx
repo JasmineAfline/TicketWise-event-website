@@ -2,6 +2,7 @@
 import { useEvent } from "../context/EventContext";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+import { BsCalendarEvent, BsClock, BsGeoAlt } from "react-icons/bs";
 
 const Events = () => {
   const { events, loading, fetchEvents, deleteEvent, bookEvent } = useEvent();
@@ -91,7 +92,7 @@ const Events = () => {
 
       <div className="max-w-6xl mx-auto relative z-10">
         <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-4 animate-fade-in-down">
-          Upcoming Events ðŸŽ«
+          Upcoming Events
         </h1>
 
         {/* Search Bar */}
@@ -146,11 +147,13 @@ const Events = () => {
                   <div>
                     <h3 className="text-xl font-bold mb-2 group-hover:text-purple-600 transition-colors">{event.title}</h3>
                     <p className="text-gray-600 mb-1 line-clamp-3">{event.description}</p>
-                    <p className="text-gray-500 text-sm">
-                      ðŸ“… {new Date(event.date).toLocaleDateString()} | â°{" "}
-                      {new Date(event.date).toLocaleTimeString()}
+                    <p className="text-gray-500 text-sm flex items-center gap-2">
+                      <BsCalendarEvent className="text-purple-500" size={16} /> {new Date(event.date).toLocaleDateString()} |
+                      <BsClock className="text-purple-500" size={16} /> {new Date(event.date).toLocaleTimeString()}
                     </p>
-                    <p className="text-gray-500 text-sm">ðŸ“ {event.location}</p>
+                    <p className="text-gray-500 text-sm flex items-center gap-2">
+                      <BsGeoAlt className="text-purple-500" size={16} /> {event.location}
+                    </p>
                     <p className="text-purple-600 text-sm font-bold mt-2">KSh {event.price}</p>
                   </div>
 
@@ -202,11 +205,13 @@ const Events = () => {
               <h2 className="text-2xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500">
                 {selectedEvent.title}
               </h2>
-              <p className="text-gray-600 mb-1">
-                ðŸ“… {new Date(selectedEvent.date).toLocaleDateString()} | â°{" "}
-                {new Date(selectedEvent.date).toLocaleTimeString()}
+              <p className="text-gray-600 mb-1 flex items-center gap-2">
+                <BsCalendarEvent className="text-purple-500" size={16} /> {new Date(selectedEvent.date).toLocaleDateString()} |
+                <BsClock className="text-purple-500" size={16} /> {new Date(selectedEvent.date).toLocaleTimeString()}
               </p>
-              <p className="text-gray-600 mb-4">ðŸ“ {selectedEvent.location}</p>
+              <p className="text-gray-600 mb-4 flex items-center gap-2">
+                <BsGeoAlt className="text-purple-500" size={16} /> {selectedEvent.location}
+              </p>
               <p className="text-gray-700 mb-4">{selectedEvent.description}</p>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
                 <span className="font-bold text-purple-600 text-2xl">KSh {selectedEvent.price}</span>

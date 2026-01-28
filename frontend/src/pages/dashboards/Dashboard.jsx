@@ -21,7 +21,7 @@ import {
 
 // Axios instance with dynamic token
 const axiosInstance = axios.create({
-  baseURL: "https://ticketwise-backend.onrender.com/api",
+  baseURL: process.env.REACT_APP_API_URL || "http://localhost:5000/api",
 });
 
 axiosInstance.interceptors.request.use(

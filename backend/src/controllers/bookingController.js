@@ -1,30 +1,30 @@
-import Booking from "../models/Booking.js";
-import Event from "../models/Event.js";
-import MpesaService from "../utils/mpesaService.js";
+const Booking = require('../models/Booking');
+const Event = require('../models/Event');
+const MpesaService = require('../utils/mpesaService');
 
 // ==========================
 // Create Booking
 // ==========================
-export const createBooking = async (req, res) => {
+exports.createBooking = async (req, res) => {
   try {
     const { eventId, phoneNumber } = req.body;
 
     const event = await Event.findById(eventId);
-    if (!event) return res.status(404).json({ message: "Event not found" });
+    if (!event) return res.status(404).json({ message: 'Event not found' });
 
     // Check if user already booked
     const existingBooking = await Booking.findOne({
       user: req.user._id,
       event: eventId,
     });
-    if (existingBooking) return res.status(400).json({ message: "Already booked" });
+    if (existingBooking) return res.status(400).json({ message: 'Already booked' });
 
     // Create booking
     const booking = await Booking.create({
       user: req.user._id,
       event: eventId,
       amount: event.price,
-      paymentStatus: event.price === 0 ? "paid" : "pending",
+      paymentStatus: event.price === 0 ? 'paid' : 'pending',
       paymentDate: event.price === 0 ? new Date() : null,
     });
 
@@ -32,10 +32,10 @@ export const createBooking = async (req, res) => {
     if (event.price === 0) {
       event.attendees.push(req.user._id);
       await event.save();
-      return res.status(201).json({ message: "Booking confirmed (free event)", booking });
+      return res.status(201).json({ message: 'Booking confirmed (free event)', booking });
     }
 
-    // Paid event: trigger M-Pesa STK Push (sandbox hardcoded)
+    // Paid event: trigger M-Pesa STK Push
     const stkResponse = await MpesaService.stkPush(
       phoneNumber,
       event.price,
@@ -46,28 +46,27 @@ export const createBooking = async (req, res) => {
     await booking.save();
 
     res.status(201).json({
-      message: "Booking created. Complete payment via M-Pesa STK Push.",
+      message: 'Booking created. Complete payment via M-Pesa STK Push.',
       booking,
-      stkResponse,
     });
   } catch (error) {
-    console.error(error.response?.data || error);
-    res.status(500).json({ message: "Booking failed" });
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
 // ==========================
-// M-Pesa callback to update payment
+// M-Pesa Callback - Update Payment Status
 // ==========================
-export const updatePaymentStatus = async (req, res) => {
+exports.updatePaymentStatus = async (req, res) => {
   try {
     const { CheckoutRequestID, ResultCode, ResultDesc } = req.body.Body.stkCallback;
 
     const booking = await Booking.findOne({ mpesaCheckoutRequestID: CheckoutRequestID });
-    if (!booking) return res.status(404).json({ message: "Booking not found" });
+    if (!booking) return res.status(404).json({ message: 'Booking not found' });
 
     if (ResultCode === 0) {
-      booking.paymentStatus = "paid";
+      booking.paymentStatus = 'paid';
       booking.paymentDate = new Date();
       await booking.save();
 
@@ -76,42 +75,39 @@ export const updatePaymentStatus = async (req, res) => {
       event.attendees.push(booking.user);
       await event.save();
     } else {
-      booking.paymentStatus = "failed";
+      booking.paymentStatus = 'failed';
       await booking.save();
     }
 
-    res.status(200).json({ message: "Payment status updated", booking });
+    res.status(200).json({ message: 'Payment status updated', booking });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Failed to update payment status" });
+    res.status(500).json({ message: 'Failed to update payment status' });
   }
 };
 
 // ==========================
-// Get bookings for logged-in user
+// Get User Bookings
 // ==========================
-export const getUserBookings = async (req, res) => {
+exports.getUserBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find({ user: req.user._id })
-      .populate("event", "title date location price");
+    const bookings = await Booking.find({ user: req.user._id }).populate('event', 'title date location price');
     res.status(200).json(bookings);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 };
 
 // ==========================
-// Get all bookings (Admin/Employee)
+// Get All Bookings (Admin/Employee)
 // ==========================
-export const getAllBookings = async (req, res) => {
+exports.getAllBookings = async (req, res) => {
   try {
-    const bookings = await Booking.find()
-      .populate("user", "name email")
-      .populate("event", "title date location price");
+    const bookings = await Booking.find().populate('user', 'name email').populate('event', 'title date location price');
     res.status(200).json(bookings);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({ message: 'Server error' });
   }
 };

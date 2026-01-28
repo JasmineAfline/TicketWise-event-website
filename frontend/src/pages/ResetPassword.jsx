@@ -7,6 +7,7 @@ const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   const { setUser } = useAuth();
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -35,7 +36,7 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`https://ticketwise-backend.onrender.com/api/users/reset-password/${token}`, {
+      const response = await fetch(`${apiUrl}/users/reset-password/${token}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

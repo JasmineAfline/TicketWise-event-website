@@ -3,6 +3,9 @@ import { useState } from "react";
 import ReviewCard from "../components/ReviewCard";
 import FAQSection from "../components/FAQSection";
 import { Sparkles, Calendar, MapPin, ArrowRight, Star, Users, Shield, Zap } from "lucide-react";
+import { GiMusicalNotes } from "react-icons/gi";
+import { FiMic, FiTrendingUp } from "react-icons/fi";
+import { MdCelebration } from "react-icons/md";
 
 function Button({ children, className, icon }) {
   return (
@@ -13,10 +16,12 @@ function Button({ children, className, icon }) {
   );
 }
 
-function CategoryCard({ title, icon }) {
+function CategoryCard({ title, icon: Icon }) {
   return (
     <div className="bg-white rounded-2xl shadow hover:shadow-2xl p-6 text-center transition-all duration-300 transform hover:scale-105 hover:-translate-y-2 cursor-pointer group">
-      <div className="text-5xl mb-4 group-hover:scale-110 transition-transform">{icon}</div>
+      <div className="text-5xl mb-4 group-hover:scale-110 transition-transform flex justify-center">
+        <Icon className="text-purple-600 group-hover:text-purple-800" size={56} />
+      </div>
       <h3 className="font-bold text-lg text-gray-800 group-hover:text-purple-600 transition-colors">{title}</h3>
     </div>
   );
@@ -197,10 +202,10 @@ export default function LandingPage() {
           <p className="text-gray-600 text-lg">Find the perfect event for every occasion</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <CategoryCard title="Concerts" icon="ðŸŽµ" />
-          <CategoryCard title="Conferences" icon="ðŸŽ¤" />
-          <CategoryCard title="Sports" icon="ðŸ†" />
-          <CategoryCard title="Festivals" icon="ðŸŽ‰" />
+          <CategoryCard title="Concerts" icon={GiMusicalNotes} />
+          <CategoryCard title="Conferences" icon={FiMic} />
+          <CategoryCard title="Sports" icon={FiTrendingUp} />
+          <CategoryCard title="Festivals" icon={MdCelebration} />
         </div>
       </section>
 

@@ -1,10 +1,10 @@
-import express from "express";
-import { getReports } from "../controllers/reportController.js";
-import { protect, authorize } from "../middleware/authMiddleware.js";
+const express = require('express');
+const { getReports } = require('../controllers/reportController');
+const { protect, authorize } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
 // Admin-only reports route
-router.get("/", protect, authorize("admin"), getReports);
+router.get('/', protect, authorize('admin'), getReports);
 
-export default router;
+module.exports = router;

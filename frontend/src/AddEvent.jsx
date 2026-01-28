@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 
 const AddEvent = () => {
   const navigate = useNavigate();
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
   const [form, setForm] = useState({
     name: "",
     date: "",
@@ -21,7 +22,7 @@ const AddEvent = () => {
     setLoading(true);
 
     try {
-      await axios.post("https://ticketwise-backend.onrender.com/api/events", form);
+      await axios.post(`${apiUrl}/events`, form);
       alert("âœ… Event created successfully!");
       navigate("/admin/manage-events"); // âœ… redirect after success
     } catch (err) {

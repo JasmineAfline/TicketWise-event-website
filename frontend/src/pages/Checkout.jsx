@@ -4,6 +4,7 @@ import axios from "axios";
 
 export default function Checkout() {
   const { id } = useParams();
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
   const [event, setEvent] = useState(null);
   const [loading, setLoading] = useState(true);
   const [phone, setPhone] = useState("");
@@ -12,7 +13,7 @@ export default function Checkout() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axios.get(`https://ticketwise-backend.onrender.com/api/events/${id}`);
+        const res = await axios.get(`${apiUrl}/events/${id}`);
         setEvent(res.data);
       } catch (err) {
         console.error("Error fetching event:", err);
@@ -31,7 +32,7 @@ export default function Checkout() {
 
     setPaying(true);
     try {
-      const res = await axios.post(`https://ticketwise-backend.onrender.com/api/payments/${id}`, {
+      const res = await axios.post(`${apiUrl}/payments/${id}`, {
         phoneNumber: formattedPhone,
         amount: event.price,
       });

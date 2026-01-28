@@ -2,6 +2,7 @@
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Search } from "lucide-react";
+import { HiMenu, HiX } from "react-icons/hi";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false); // Mobile menu
@@ -142,7 +143,7 @@ export default function Navbar() {
           className="md:hidden text-2xl focus:outline-none smooth-hover"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? "âœ–" : "â˜°"}
+          {isOpen ? <HiX size={28} /> : <HiMenu size={28} />}
         </button>
       </div>
 

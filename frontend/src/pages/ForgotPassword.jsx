@@ -7,6 +7,7 @@ const ForgotPassword = () => {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -15,7 +16,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("https://ticketwise-backend.onrender.com/api/users/forgot-password", {
+      const response = await fetch(`${apiUrl}/users/forgot-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

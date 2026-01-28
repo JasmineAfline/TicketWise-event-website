@@ -4,6 +4,7 @@ import { useAuth } from "../context/AuthContext";
 
 const Booking = () => {
   const { token } = useAuth();
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
   const [bookings, setBookings] = useState([]);
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -12,7 +13,7 @@ const Booking = () => {
     const fetchBookingsData = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("https://ticketwise-backend.onrender.com/api/bookings/my", {
+        const res = await axios.get(`${apiUrl}/bookings/my`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setBookings(res.data.bookings);
@@ -28,7 +29,7 @@ const Booking = () => {
   const handleCancel = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this booking?")) return;
     try {
-      await axios.delete(`https://ticketwise-backend.onrender.com/api/bookings/${id}`, {
+      await axios.delete(`${apiUrl}/bookings/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setBookings((prev) => prev.filter((b) => b._id !== id));

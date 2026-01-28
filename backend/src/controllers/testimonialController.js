@@ -1,6 +1,6 @@
-import Testimonial from '../models/Testimonial.js'; // We'll create this model next
+const Testimonial = require('../models/Testimonial');
 
-export const getTestimonials = async (req, res) => {
+exports.getTestimonials = async (req, res) => {
   try {
     const testimonials = await Testimonial.find();
     res.json(testimonials);
@@ -9,7 +9,7 @@ export const getTestimonials = async (req, res) => {
   }
 };
 
-export const createTestimonial = async (req, res) => {
+exports.createTestimonial = async (req, res) => {
   try {
     const { name, message, image } = req.body;
     const testimonial = await Testimonial.create({ name, message, image });

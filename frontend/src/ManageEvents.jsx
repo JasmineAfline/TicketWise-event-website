@@ -2,14 +2,15 @@
 import axios from "axios";
 
 const ManageEvents = () => {
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
   // âœ… Fetch events
   const fetchEvents = async () => {
     try {
-      const res = await axios.get("https://ticketwise-backend.onrender.com/api/events");
-      setEvents(res.data.data || res.data); // adjust if API wraps data
+      const res = await axios.get(`${apiUrl}/events`);
+      setEvents(res.data.events || res.data); // adjust if API wraps data
     } catch (err) {
       console.error("âŒ Error fetching events:", err.response?.data || err.message);
     } finally {
@@ -26,7 +27,7 @@ const ManageEvents = () => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
 
     try {
-      await axios.delete(`https://ticketwise-backend.onrender.com/api/events/${id}`);
+      await axios.delete(`${apiUrl}/events/${id}`);
       setEvents(events.filter((event) => event._id !== id)); // update UI instantly
       alert("âœ… Event deleted successfully");
     } catch (err) {
@@ -41,7 +42,7 @@ const ManageEvents = () => {
     if (!newName) return;
 
     try {
-      const res = await axios.put(`https://ticketwise-backend.onrender.com/api/events/${id}`, {
+      const res = await axios.put(`${apiUrl}/events/${id}`, {
         name: newName,
       });
 

@@ -1,21 +1,21 @@
-﻿import mongoose from "mongoose";
+﻿const mongoose = require('mongoose');
 
 const testimonialSchema = new mongoose.Schema({
   name: {
     type: String,
     required: true,
   },
-  position: {
+  message: {
     type: String,
     required: true,
   },
-  content: {
+  image: {
     type: String,
-    required: true,
+    default: null,
   },
   rating: {
     type: Number,
-    required: true,
+    default: 5,
     min: 1,
     max: 5,
   },
@@ -25,4 +25,4 @@ const testimonialSchema = new mongoose.Schema({
   },
 });
 
-export default mongoose.model("Testimonial", testimonialSchema);
+module.exports = mongoose.model('Testimonial', testimonialSchema);

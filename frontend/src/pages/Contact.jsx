@@ -1,4 +1,4 @@
-﻿import { FaFacebook, FaLinkedin, FaGithub, FaInstagram } from "react-icons/fa";
+﻿import { FaFacebook, FaLinkedin, FaGithub, FaInstagram, FaMapMarkerAlt, FaEnvelope, FaPhone } from "react-icons/fa";
 import { useState } from "react";
 
 export default function Contact() {
@@ -38,7 +38,7 @@ export default function Contact() {
       {/* Header */}
       <section className="text-center mb-12 relative z-10">
         <h1 className="text-4xl md:text-5xl font-bold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 animate-fade-in-down">
-          Contact Us ðŸ“©
+          Contact Us
         </h1>
         <p className="text-gray-600 max-w-2xl mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s" }}>
           Have questions or need support? Our team is here to help with bookings, events, or general inquiries. Reach out and we'll respond promptly.
@@ -130,13 +130,13 @@ export default function Contact() {
           </p>
           <ul className="space-y-4 mb-6">
             <li className="flex items-center hover:translate-x-2 transition-transform duration-300">
-              <span className="mr-3 text-2xl">ðŸ“</span> Nairobi, Kenya
+              <FaMapMarkerAlt className="mr-3 text-2xl" /> Nairobi, Kenya
             </li>
             <li className="flex items-center hover:translate-x-2 transition-transform duration-300">
-              <span className="mr-3 text-2xl">ðŸ“§</span> support@tickewise.com
+              <FaEnvelope className="mr-3 text-2xl" /> support@tickewise.com
             </li>
             <li className="flex items-center hover:translate-x-2 transition-transform duration-300">
-              <span className="mr-3 text-2xl">ðŸ“ž</span> +254 704 988 410
+              <FaPhone className="mr-3 text-2xl" /> +254 704 988 410
             </li>
           </ul>
           <div className="flex gap-5 text-2xl">

@@ -5,6 +5,7 @@ import { Eye, EyeOff } from "lucide-react";
 
 const Profile = () => {
   const { user, token, setUser } = useAuth();
+  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
   const [formData, setFormData] = useState({ name: "", email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [message, setMessage] = useState("");
@@ -25,7 +26,7 @@ const Profile = () => {
 
     try {
       const res = await axios.put(
-        `https://ticketwise-backend.onrender.com/api/users/me`,
+        `${apiUrl}/users/me`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );

@@ -7,7 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const API_URL = "https://ticketwise-backend.onrender.com/api/users";
+  const API_URL = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/users` : "http://localhost:5000/api/users";
   const navigate = useNavigate();
 
   // Load user info if token exists

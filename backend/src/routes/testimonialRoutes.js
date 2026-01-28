@@ -1,12 +1,12 @@
-import express from "express";
-import { getTestimonials, createTestimonial } from "../controllers/testimonialController.js";
+const express = require('express');
+const { getTestimonials, createTestimonial } = require('../controllers/testimonialController');
 
 const router = express.Router();
 
 // Get all testimonials
-router.get("/", getTestimonials);
+router.get('/', getTestimonials);
 
 // Create a new testimonial
-router.post("/", createTestimonial);
+router.post('/', createTestimonial);
 
-export default router;
+module.exports = router;
