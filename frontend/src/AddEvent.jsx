@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -21,12 +21,12 @@ const AddEvent = () => {
     setLoading(true);
 
     try {
-      await axios.post("http://localhost:5000/api/events", form);
-      alert("✅ Event created successfully!");
-      navigate("/admin/manage-events"); // ✅ redirect after success
+      await axios.post("https://ticketwise-backend.onrender.com/api/events", form);
+      alert("âœ… Event created successfully!");
+      navigate("/admin/manage-events"); // âœ… redirect after success
     } catch (err) {
-      console.error("❌ Error creating event:", err.response?.data || err.message);
-      alert("❌ Failed to create event");
+      console.error("âŒ Error creating event:", err.response?.data || err.message);
+      alert("âŒ Failed to create event");
     } finally {
       setLoading(false);
     }
@@ -83,3 +83,4 @@ const AddEvent = () => {
 };
 
 export default AddEvent;
+

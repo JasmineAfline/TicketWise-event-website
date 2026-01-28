@@ -1,4 +1,4 @@
-import { useParams } from "react-router-dom";
+﻿import { useParams } from "react-router-dom";
 import { useEffect, useState } from "react";
 import axios from "axios";
 
@@ -12,7 +12,7 @@ export default function Checkout() {
   useEffect(() => {
     const fetchEvent = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/events/${id}`);
+        const res = await axios.get(`https://ticketwise-backend.onrender.com/api/events/${id}`);
         setEvent(res.data);
       } catch (err) {
         console.error("Error fetching event:", err);
@@ -26,12 +26,12 @@ export default function Checkout() {
   const handlePayment = async () => {
     if (!phone) return alert("Please enter your phone number");
 
-    // Convert 0715... → +254715...
+    // Convert 0715... â†’ +254715...
     const formattedPhone = phone.startsWith("0") ? "+254" + phone.slice(1) : phone;
 
     setPaying(true);
     try {
-      const res = await axios.post(`http://localhost:5000/api/payments/${id}`, {
+      const res = await axios.post(`https://ticketwise-backend.onrender.com/api/payments/${id}`, {
         phoneNumber: formattedPhone,
         amount: event.price,
       });
@@ -82,3 +82,4 @@ export default function Checkout() {
     </div>
   );
 }
+

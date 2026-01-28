@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Search } from "lucide-react";
@@ -142,7 +142,7 @@ export default function Navbar() {
           className="md:hidden text-2xl focus:outline-none smooth-hover"
           onClick={() => setIsOpen(!isOpen)}
         >
-          {isOpen ? "✖" : "☰"}
+          {isOpen ? "âœ–" : "â˜°"}
         </button>
       </div>
 

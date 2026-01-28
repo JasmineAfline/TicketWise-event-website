@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { Eye, EyeOff, Lock, CheckCircle, Shield, Sparkles } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
@@ -35,7 +35,7 @@ const ResetPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch(`http://localhost:5000/api/users/reset-password/${token}`, {
+      const response = await fetch(`https://ticketwise-backend.onrender.com/api/users/reset-password/${token}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -378,3 +378,4 @@ const ResetPassword = () => {
 };
 
 export default ResetPassword;
+

@@ -1,4 +1,4 @@
-// src/components/DashboardLayout.jsx
+﻿// src/components/DashboardLayout.jsx
 import React from "react";
 import Navbar from "./Navbar";
 import Footer from "./Footer";

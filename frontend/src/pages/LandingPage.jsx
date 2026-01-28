@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+﻿import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ReviewCard from "../components/ReviewCard";
 import FAQSection from "../components/FAQSection";
@@ -197,10 +197,10 @@ export default function LandingPage() {
           <p className="text-gray-600 text-lg">Find the perfect event for every occasion</p>
         </div>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          <CategoryCard title="Concerts" icon="🎵" />
-          <CategoryCard title="Conferences" icon="🎤" />
-          <CategoryCard title="Sports" icon="🏆" />
-          <CategoryCard title="Festivals" icon="🎉" />
+          <CategoryCard title="Concerts" icon="ðŸŽµ" />
+          <CategoryCard title="Conferences" icon="ðŸŽ¤" />
+          <CategoryCard title="Sports" icon="ðŸ†" />
+          <CategoryCard title="Festivals" icon="ðŸŽ‰" />
         </div>
       </section>
 

@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -6,7 +6,7 @@ export default function Footer() {
       <div className="container mx-auto px-6 grid md:grid-cols-3 gap-10">
         {/* Brand Info */}
         <div>
-          <h2 className="text-2xl font-bold text-white mb-4">Tickewise 🎟️</h2>
+          <h2 className="text-2xl font-bold text-white mb-4">Tickewise ðŸŽŸï¸</h2>
           <p className="text-gray-400">
             Your trusted platform for discovering, booking, and managing events
             with ease. Bringing people together, one event at a time.
@@ -84,7 +84,7 @@ export default function Footer() {
 
       {/* Bottom Bar */}
       <div className="border-t border-gray-700 mt-10 pt-6 text-center text-gray-500 text-sm">
-        © {new Date().getFullYear()} Tickewise. All rights reserved.
+        Â© {new Date().getFullYear()} Tickewise. All rights reserved.
       </div>
     </footer>
   );

@@ -1,4 +1,4 @@
-// src/components/TeamTimeline.jsx
+﻿// src/components/TeamTimeline.jsx
 import React from "react";
 import { teamMembers } from "../data/team";
 

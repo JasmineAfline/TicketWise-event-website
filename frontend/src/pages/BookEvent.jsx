@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth } from "../context/AuthContext";
 
@@ -12,7 +12,7 @@ const Booking = () => {
     const fetchBookingsData = async () => {
       setLoading(true);
       try {
-        const res = await axios.get("http://localhost:5000/api/bookings/my", {
+        const res = await axios.get("https://ticketwise-backend.onrender.com/api/bookings/my", {
           headers: { Authorization: `Bearer ${token}` },
         });
         setBookings(res.data.bookings);
@@ -28,7 +28,7 @@ const Booking = () => {
   const handleCancel = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this booking?")) return;
     try {
-      await axios.delete(`http://localhost:5000/api/bookings/${id}`, {
+      await axios.delete(`https://ticketwise-backend.onrender.com/api/bookings/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setBookings((prev) => prev.filter((b) => b._id !== id));
@@ -101,3 +101,4 @@ const Booking = () => {
 };
 
 export default Booking;
+

@@ -1,17 +1,17 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import axios from "axios";
 
 const ManageEvents = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ✅ Fetch events
+  // âœ… Fetch events
   const fetchEvents = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/events");
+      const res = await axios.get("https://ticketwise-backend.onrender.com/api/events");
       setEvents(res.data.data || res.data); // adjust if API wraps data
     } catch (err) {
-      console.error("❌ Error fetching events:", err.response?.data || err.message);
+      console.error("âŒ Error fetching events:", err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
@@ -21,35 +21,35 @@ const ManageEvents = () => {
     fetchEvents();
   }, []);
 
-  // ✅ Delete event
+  // âœ… Delete event
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this event?")) return;
 
     try {
-      await axios.delete(`http://localhost:5000/api/events/${id}`);
+      await axios.delete(`https://ticketwise-backend.onrender.com/api/events/${id}`);
       setEvents(events.filter((event) => event._id !== id)); // update UI instantly
-      alert("✅ Event deleted successfully");
+      alert("âœ… Event deleted successfully");
     } catch (err) {
-      console.error("❌ Error deleting event:", err.response?.data || err.message);
-      alert("❌ Failed to delete event");
+      console.error("âŒ Error deleting event:", err.response?.data || err.message);
+      alert("âŒ Failed to delete event");
     }
   };
 
-  // ✅ Edit event (simple example: prompt user, you can replace with modal/form later)
+  // âœ… Edit event (simple example: prompt user, you can replace with modal/form later)
   const handleEdit = async (id) => {
     const newName = window.prompt("Enter new event name:");
     if (!newName) return;
 
     try {
-      const res = await axios.put(`http://localhost:5000/api/events/${id}`, {
+      const res = await axios.put(`https://ticketwise-backend.onrender.com/api/events/${id}`, {
         name: newName,
       });
 
       setEvents(events.map((event) => (event._id === id ? res.data : event)));
-      alert("✅ Event updated successfully");
+      alert("âœ… Event updated successfully");
     } catch (err) {
-      console.error("❌ Error updating event:", err.response?.data || err.message);
-      alert("❌ Failed to update event");
+      console.error("âŒ Error updating event:", err.response?.data || err.message);
+      alert("âŒ Failed to update event");
     }
   };
 
@@ -87,7 +87,7 @@ const ManageEvents = () => {
                 >
                   <td className="px-4 py-3 border-b">{event.name || event.title}</td>
                   <td className="px-4 py-3 border-b">
-                    {event.date ? new Date(event.date).toLocaleDateString() : "—"}
+                    {event.date ? new Date(event.date).toLocaleDateString() : "â€”"}
                   </td>
                   <td className="px-4 py-3 border-b">KES {event.price}</td>
                   <td className="px-4 py-3 border-b">{event.availableTickets}</td>
@@ -116,3 +116,4 @@ const ManageEvents = () => {
 };
 
 export default ManageEvents;
+

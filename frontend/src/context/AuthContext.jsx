@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from "react";
+﻿import { createContext, useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -7,7 +7,7 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const API_URL = "http://localhost:5000/api/users";
+  const API_URL = "https://ticketwise-backend.onrender.com/api/users";
   const navigate = useNavigate();
 
   // Load user info if token exists
@@ -15,12 +15,12 @@ export const AuthProvider = ({ children }) => {
     const fetchUser = async () => {
       if (token) {
         try {
-          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // ✅ set default header
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // âœ… set default header
 
           const res = await axios.get(`${API_URL}/me`);
           const userData = {
             ...res.data.user,
-            token, // ✅ inject token into user
+            token, // âœ… inject token into user
           };
           setUser(userData);
           redirectByRole(userData.role);
@@ -49,14 +49,14 @@ export const AuthProvider = ({ children }) => {
 
       const userData = {
         ...res.data.user,
-        token: res.data.token, // ✅ store token in user
+        token: res.data.token, // âœ… store token in user
       };
 
       setUser(userData);
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
 
-      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`; // ✅ set default header
+      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`; // âœ… set default header
 
       redirectByRole(userData.role);
       return userData;
@@ -85,7 +85,7 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     localStorage.removeItem("token");
 
-    delete axios.defaults.headers.common["Authorization"]; // ✅ clear default header
+    delete axios.defaults.headers.common["Authorization"]; // âœ… clear default header
 
     navigate("/login");
   };
@@ -98,3 +98,4 @@ export const AuthProvider = ({ children }) => {
 };
 
 export const useAuth = () => useContext(AuthContext);
+

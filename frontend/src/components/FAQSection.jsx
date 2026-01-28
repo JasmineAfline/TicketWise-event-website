@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 
 // FAQ data
 const faqs = [
@@ -27,7 +27,7 @@ function FAQItem({ question, answer }) {
     <div className="bg-white rounded-xl shadow-md mb-4 p-4 cursor-pointer transition-all hover:shadow-lg">
       <div onClick={() => setOpen(!open)} className="flex justify-between items-center">
         <h3 className="font-semibold text-lg">{question}</h3>
-        <span className="text-2xl">{open ? "−" : "+"}</span>
+        <span className="text-2xl">{open ? "âˆ’" : "+"}</span>
       </div>
       {open && <p className="mt-2 text-gray-600">{answer}</p>}
     </div>

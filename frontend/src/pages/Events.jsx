@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+﻿import React, { useEffect, useState } from "react";
 import { useEvent } from "../context/EventContext";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
@@ -91,7 +91,7 @@ const Events = () => {
 
       <div className="max-w-6xl mx-auto relative z-10">
         <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 mb-4 animate-fade-in-down">
-          Upcoming Events 🎫
+          Upcoming Events ðŸŽ«
         </h1>
 
         {/* Search Bar */}
@@ -147,10 +147,10 @@ const Events = () => {
                     <h3 className="text-xl font-bold mb-2 group-hover:text-purple-600 transition-colors">{event.title}</h3>
                     <p className="text-gray-600 mb-1 line-clamp-3">{event.description}</p>
                     <p className="text-gray-500 text-sm">
-                      📅 {new Date(event.date).toLocaleDateString()} | ⏰{" "}
+                      ðŸ“… {new Date(event.date).toLocaleDateString()} | â°{" "}
                       {new Date(event.date).toLocaleTimeString()}
                     </p>
-                    <p className="text-gray-500 text-sm">📍 {event.location}</p>
+                    <p className="text-gray-500 text-sm">ðŸ“ {event.location}</p>
                     <p className="text-purple-600 text-sm font-bold mt-2">KSh {event.price}</p>
                   </div>
 
@@ -192,7 +192,7 @@ const Events = () => {
                 className="absolute top-4 right-4 text-gray-600 text-3xl font-bold hover:text-gray-900 hover:scale-125 transition-all duration-300"
                 onClick={() => setSelectedEvent(null)}
               >
-                ×
+                Ã—
               </button>
               <img
                 src={getImagePath(selectedEvent.title)}
@@ -203,10 +203,10 @@ const Events = () => {
                 {selectedEvent.title}
               </h2>
               <p className="text-gray-600 mb-1">
-                📅 {new Date(selectedEvent.date).toLocaleDateString()} | ⏰{" "}
+                ðŸ“… {new Date(selectedEvent.date).toLocaleDateString()} | â°{" "}
                 {new Date(selectedEvent.date).toLocaleTimeString()}
               </p>
-              <p className="text-gray-600 mb-4">📍 {selectedEvent.location}</p>
+              <p className="text-gray-600 mb-4">ðŸ“ {selectedEvent.location}</p>
               <p className="text-gray-700 mb-4">{selectedEvent.description}</p>
               <div className="flex flex-col gap-3 sm:flex-row sm:justify-between sm:items-center">
                 <span className="font-bold text-purple-600 text-2xl">KSh {selectedEvent.price}</span>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { Eye, EyeOff } from "lucide-react";
@@ -25,7 +25,7 @@ const Profile = () => {
 
     try {
       const res = await axios.put(
-        `http://localhost:5000/api/users/me`,
+        `https://ticketwise-backend.onrender.com/api/users/me`,
         formData,
         { headers: { Authorization: `Bearer ${token}` } }
       );
@@ -101,3 +101,4 @@ const Profile = () => {
 };
 
 export default Profile;
+

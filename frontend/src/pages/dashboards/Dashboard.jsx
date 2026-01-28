@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -21,7 +21,7 @@ import {
 
 // Axios instance with dynamic token
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000/api",
+  baseURL: "https://ticketwise-backend.onrender.com/api",
 });
 
 axiosInstance.interceptors.request.use(
@@ -586,3 +586,4 @@ const ReportsSection = () => (
 );
 
 export default Dashboard;
+

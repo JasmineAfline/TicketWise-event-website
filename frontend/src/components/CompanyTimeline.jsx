@@ -1,4 +1,4 @@
-// src/components/CompanyTimeline.jsx
+﻿// src/components/CompanyTimeline.jsx
 import React from "react";
 import { milestones } from "../data/milestones";
 
@@ -7,7 +7,7 @@ export default function CompanyTimeline() {
     <section className="py-20 bg-gray-50">
       <div className="container mx-auto px-6">
         <h2 className="text-4xl font-bold text-center mb-12">
-          Our Journey 🚀
+          Our Journey ðŸš€
         </h2>
 
         <div className="relative">

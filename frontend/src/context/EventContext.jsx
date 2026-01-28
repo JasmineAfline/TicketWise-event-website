@@ -1,4 +1,4 @@
-// src/context/EventContext.jsx
+﻿// src/context/EventContext.jsx
 import React, { createContext, useState, useContext, useEffect } from "react";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
@@ -13,7 +13,7 @@ export const EventProvider = ({ children }) => {
 
   // Axios instance with auth header
   const axiosInstance = axios.create({
-    baseURL: "http://localhost:5000/api",
+    baseURL: "https://ticketwise-backend.onrender.com/api",
   });
 
   axiosInstance.interceptors.request.use((config) => {
@@ -72,7 +72,7 @@ export const EventProvider = ({ children }) => {
     }
   };
 
-  // ✅ Fixed Book event
+  // âœ… Fixed Book event
   const bookEvent = async (eventId, phoneNumber) => {
     if (!user) throw new Error("You must be logged in to book an event.");
     if (!phoneNumber) throw new Error("Phone number is required for booking.");

@@ -1,4 +1,4 @@
-const ViewEvents = () => {
+﻿const ViewEvents = () => {
   return (
     <div style={{ padding: "20px" }}>
       <h1>Available Events</h1>

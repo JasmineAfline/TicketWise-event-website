@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+﻿import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { Mail, ArrowLeft, Send, CheckCircle } from "lucide-react";
 
@@ -15,7 +15,7 @@ const ForgotPassword = () => {
     setLoading(true);
 
     try {
-      const response = await fetch("http://localhost:5000/api/users/forgot-password", {
+      const response = await fetch("https://ticketwise-backend.onrender.com/api/users/forgot-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -271,3 +271,4 @@ const ForgotPassword = () => {
 };
 
 export default ForgotPassword;
+

@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 
 const ReviewCard = ({ name, rating, comment, avatar }) => {
   const ref = useRef(null);
@@ -36,7 +36,7 @@ const ReviewCard = ({ name, rating, comment, avatar }) => {
           <h4 className="font-bold">{name}</h4>
           <div className="flex text-yellow-400">
             {[...Array(5)].map((_, i) => (
-              <span key={i} className={i < rating ? "" : "opacity-30"}>★</span>
+              <span key={i} className={i < rating ? "" : "opacity-30"}>â˜…</span>
             ))}
           </div>
         </div>

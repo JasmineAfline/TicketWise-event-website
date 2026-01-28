@@ -1,4 +1,4 @@
-// src/components/Sidebar.jsx
+﻿// src/components/Sidebar.jsx
 import { Link } from "react-router-dom";
 
 const Sidebar = ({ role }) => {
