@@ -7,7 +7,14 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const API_URL = process.env.REACT_APP_API_URL ? `${process.env.REACT_APP_API_URL}/users` : "http://localhost:5000/api/users";
+
+  // ✅ SAFE for production + development
+  const API_BASE =
+    process.env.REACT_APP_API_URL ||
+    "https://ticketwise-backend.onrender.com/api";
+
+  const API_URL = `${API_BASE}/users`;
+
   const navigate = useNavigate();
 
   // Load user info if token exists
@@ -15,13 +22,15 @@ export const AuthProvider = ({ children }) => {
     const fetchUser = async () => {
       if (token) {
         try {
-          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`; // âœ… set default header
+          axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
 
           const res = await axios.get(`${API_URL}/me`);
+
           const userData = {
             ...res.data.user,
-            token, // âœ… inject token into user
+            token,
           };
+
           setUser(userData);
           redirectByRole(userData.role);
         } catch (err) {
@@ -30,6 +39,7 @@ export const AuthProvider = ({ children }) => {
         }
       }
     };
+
     fetchUser();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
@@ -49,14 +59,14 @@ export const AuthProvider = ({ children }) => {
 
       const userData = {
         ...res.data.user,
-        token: res.data.token, // âœ… store token in user
+        token: res.data.token,
       };
 
       setUser(userData);
       setToken(res.data.token);
       localStorage.setItem("token", res.data.token);
 
-      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`; // âœ… set default header
+      axios.defaults.headers.common["Authorization"] = `Bearer ${res.data.token}`;
 
       redirectByRole(userData.role);
       return userData;
@@ -69,7 +79,13 @@ export const AuthProvider = ({ children }) => {
   // Register
   const register = async (name, email, password, role = "user") => {
     try {
-      await axios.post(`${API_URL}/register`, { name, email, password, role });
+      await axios.post(`${API_URL}/register`, {
+        name,
+        email,
+        password,
+        role,
+      });
+
       alert("Registration successful! You can now log in.");
 
       // Auto-login after register
@@ -85,17 +101,18 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
     localStorage.removeItem("token");
 
-    delete axios.defaults.headers.common["Authorization"]; // âœ… clear default header
+    delete axios.defaults.headers.common["Authorization"];
 
     navigate("/login");
   };
 
   return (
-    <AuthContext.Provider value={{ user, setUser, token, login, register, logout }}>
+    <AuthContext.Provider
+      value={{ user, setUser, token, login, register, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );
 };
 
 export const useAuth = () => useContext(AuthContext);
-

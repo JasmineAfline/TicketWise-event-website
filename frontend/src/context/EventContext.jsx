@@ -11,7 +11,7 @@ export const EventProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Use deployed backend in production, fallback to localhost in dev
+  // ALWAYS include /api here
   const API_BASE_URL =
     process.env.REACT_APP_API_URL ||
     "https://ticketwise-backend.onrender.com/api";
@@ -30,7 +30,7 @@ export const EventProvider = ({ children }) => {
   const fetchEvents = async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get("/events");
+      const res = await axiosInstance.get("/events"); // -> /api/events
       setEvents(res.data.events || res.data);
     } catch (err) {
       console.error("Error fetching events:", err);
@@ -43,7 +43,7 @@ export const EventProvider = ({ children }) => {
   // Create new event
   const createEvent = async (newEvent) => {
     try {
-      const res = await axiosInstance.post("/events", newEvent);
+      const res = await axiosInstance.post("/events", newEvent); // /api/events
       setEvents((prev) => [...prev, res.data.event || res.data]);
       return res.data;
     } catch (err) {
@@ -55,7 +55,7 @@ export const EventProvider = ({ children }) => {
   // Delete event
   const deleteEvent = async (id) => {
     try {
-      await axiosInstance.delete(`/events/${id}`);
+      await axiosInstance.delete(`/events/${id}`); // /api/events/:id
       setEvents((prev) => prev.filter((e) => e._id !== id));
     } catch (err) {
       console.error("Delete event error:", err);
@@ -66,7 +66,7 @@ export const EventProvider = ({ children }) => {
   // Update event
   const updateEvent = async (id, updatedData) => {
     try {
-      const res = await axiosInstance.put(`/events/${id}`, updatedData);
+      const res = await axiosInstance.put(`/events/${id}`, updatedData); // /api/events/:id
       setEvents((prev) =>
         prev.map((e) => (e._id === id ? res.data.event || res.data : e))
       );
@@ -86,7 +86,7 @@ export const EventProvider = ({ children }) => {
       const res = await axiosInstance.post("/bookings", {
         eventId,
         phoneNumber,
-      });
+      }); // /api/bookings
       return res.data;
     } catch (err) {
       console.error("Book event error:", err);
@@ -99,7 +99,7 @@ export const EventProvider = ({ children }) => {
     const fetch = async () => {
       setLoading(true);
       try {
-        const res = await axiosInstance.get("/events");
+        const res = await axiosInstance.get("/events"); // /api/events
         setEvents(res.data.events || res.data);
       } catch (err) {
         console.error("Error fetching events:", err);
@@ -109,7 +109,6 @@ export const EventProvider = ({ children }) => {
       }
     };
     fetch();
-    // we intentionally don't include axiosInstance in deps to avoid re-running
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
