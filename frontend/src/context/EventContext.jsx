@@ -14,7 +14,7 @@ export const EventProvider = ({ children }) => {
   // Base URL from environment variable
   const API_BASE_URL =
     process.env.REACT_APP_API_URL ||
-    "https://ticketwise-backend.onrender.com";
+    "https://ticketwise-backend.onrender.com/api";
 
   // Axios instance
   const axiosInstance = axios.create({
