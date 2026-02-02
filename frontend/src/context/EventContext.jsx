@@ -11,16 +11,17 @@ export const EventProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // ALWAYS include /api here
+  // Base URL from environment variable
   const API_BASE_URL =
     process.env.REACT_APP_API_URL ||
-    "https://ticketwise-backend.onrender.com/api";
+    "https://ticketwise-backend.onrender.com";
 
-  // Axios instance with auth header
+  // Axios instance
   const axiosInstance = axios.create({
     baseURL: API_BASE_URL,
   });
 
+  // Add token to request headers if user is logged in
   axiosInstance.interceptors.request.use((config) => {
     if (token) config.headers.Authorization = `Bearer ${token}`;
     return config;
@@ -30,10 +31,10 @@ export const EventProvider = ({ children }) => {
   const fetchEvents = async () => {
     setLoading(true);
     try {
-      const res = await axiosInstance.get("/events"); // -> /api/events
+      const res = await axiosInstance.get("/events");
       setEvents(res.data.events || res.data);
     } catch (err) {
-      console.error("Error fetching events:", err);
+      console.error("Error fetching events:", err.response?.data || err.message);
       setEvents([]);
     } finally {
       setLoading(false);
@@ -43,11 +44,11 @@ export const EventProvider = ({ children }) => {
   // Create new event
   const createEvent = async (newEvent) => {
     try {
-      const res = await axiosInstance.post("/events", newEvent); // /api/events
+      const res = await axiosInstance.post("/events", newEvent);
       setEvents((prev) => [...prev, res.data.event || res.data]);
       return res.data;
     } catch (err) {
-      console.error("Create event error:", err);
+      console.error("Create event error:", err.response?.data || err.message);
       throw new Error(err.response?.data?.message || "Failed to create event");
     }
   };
@@ -55,10 +56,10 @@ export const EventProvider = ({ children }) => {
   // Delete event
   const deleteEvent = async (id) => {
     try {
-      await axiosInstance.delete(`/events/${id}`); // /api/events/:id
+      await axiosInstance.delete(`/events/${id}`);
       setEvents((prev) => prev.filter((e) => e._id !== id));
     } catch (err) {
-      console.error("Delete event error:", err);
+      console.error("Delete event error:", err.response?.data || err.message);
       throw new Error(err.response?.data?.message || "Failed to delete event");
     }
   };
@@ -66,13 +67,13 @@ export const EventProvider = ({ children }) => {
   // Update event
   const updateEvent = async (id, updatedData) => {
     try {
-      const res = await axiosInstance.put(`/events/${id}`, updatedData); // /api/events/:id
+      const res = await axiosInstance.put(`/events/${id}`, updatedData);
       setEvents((prev) =>
         prev.map((e) => (e._id === id ? res.data.event || res.data : e))
       );
       return res.data;
     } catch (err) {
-      console.error("Update event error:", err);
+      console.error("Update event error:", err.response?.data || err.message);
       throw new Error(err.response?.data?.message || "Failed to update event");
     }
   };
@@ -81,36 +82,23 @@ export const EventProvider = ({ children }) => {
   const bookEvent = async (eventId, phoneNumber) => {
     if (!user) throw new Error("You must be logged in to book an event.");
     if (!phoneNumber) throw new Error("Phone number is required for booking.");
-
     try {
       const res = await axiosInstance.post("/bookings", {
         eventId,
         phoneNumber,
-      }); // /api/bookings
+      });
       return res.data;
     } catch (err) {
-      console.error("Book event error:", err);
+      console.error("Book event error:", err.response?.data || err.message);
       throw new Error(err.response?.data?.message || "Failed to book event");
     }
   };
 
-  // Fetch events on mount
+  // Fetch events on mount or when token changes (after login)
   useEffect(() => {
-    const fetch = async () => {
-      setLoading(true);
-      try {
-        const res = await axiosInstance.get("/events"); // /api/events
-        setEvents(res.data.events || res.data);
-      } catch (err) {
-        console.error("Error fetching events:", err);
-        setEvents([]);
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetch();
+    fetchEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [token]);
 
   return (
     <EventContext.Provider
