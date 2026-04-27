@@ -570,20 +570,298 @@ const EventCard = ({ event, navigate }) => {
 };
 
 // Users Section (Admin only)
-const UsersSection = () => (
-  <div className="bg-white rounded-xl shadow-sm p-6 animate-fade-in">
-    <h2 className="text-xl font-bold text-gray-900 mb-4">User Management</h2>
-    <p className="text-gray-600">Admin user management features coming soon...</p>
-  </div>
-);
+const UsersSection = () => {
+  const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    fetchUsers();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchUsers = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await axiosInstance.get("/users", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(res.data.users || res.data || []);
+    } catch (err) {
+      console.error("Error fetching users:", err);
+      setError("Failed to load users");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async (userId) => {
+    if (!window.confirm("Are you sure you want to delete this user?")) return;
+    
+    try {
+      const token = localStorage.getItem("token");
+      await axiosInstance.delete(`/users/${userId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUsers(users.filter((u) => u._id !== userId));
+      alert("User deleted successfully");
+    } catch (err) {
+      console.error("Error deleting user:", err);
+      alert(err.response?.data?.message || "Failed to delete user");
+    }
+  };
+
+  const filteredUsers = users.filter((user) => {
+    const term = searchTerm.toLowerCase();
+    return (
+      user.name?.toLowerCase().includes(term) ||
+      user.email?.toLowerCase().includes(term) ||
+      user.role?.toLowerCase().includes(term)
+    );
+  });
+
+  const getRoleBadge = (role) => {
+    const colors = {
+      admin: "bg-purple-100 text-purple-800",
+      employee: "bg-blue-100 text-blue-800",
+      user: "bg-green-100 text-green-800",
+    };
+    return colors[role] || "bg-gray-100 text-gray-800";
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      <div className="bg-white rounded-xl shadow-sm p-4">
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
+          <input
+            type="text"
+            placeholder="Search users by name, email, or role..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+          />
+        </div>
+      </div>
+
+      {error && (
+        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+          {error}
+        </div>
+      )}
+
+      <div className="bg-white rounded-xl shadow-sm overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Joined</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {filteredUsers.length === 0 ? (
+                <tr>
+                  <td colSpan="5" className="px-6 py-12 text-center text-gray-500">
+                    No users found
+                  </td>
+                </tr>
+              ) : (
+                filteredUsers.map((user) => (
+                  <tr key={user._id} className="hover:bg-gray-50">
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <div className="flex items-center">
+                        <div className="h-10 w-10 rounded-full bg-purple-100 flex items-center justify-center">
+                          <span className="text-purple-600 font-semibold">
+                            {user.name?.charAt(0).toUpperCase()}
+                          </span>
+                        </div>
+                        <div className="ml-4">
+                          <div className="text-sm font-medium text-gray-900">{user.name}</div>
+                        </div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">{user.email}</td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span className={`px-2 py-1 text-xs font-medium rounded-full ${getRoleBadge(user.role)}`}>
+                        {user.role}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
+                      {user.createdAt ? new Date(user.createdAt).toLocaleDateString() : "N/A"}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <button
+                        onClick={() => handleDeleteUser(user._id)}
+                        className="text-red-600 hover:text-red-800 text-sm font-medium"
+                      >
+                        Delete
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 // Reports Section (Admin only)
-const ReportsSection = () => (
-  <div className="bg-white rounded-xl shadow-sm p-6 animate-fade-in">
-    <h2 className="text-xl font-bold text-gray-900 mb-4">Reports & Analytics</h2>
-    <p className="text-gray-600">Detailed reports and analytics coming soon...</p>
-  </div>
-);
+const ReportsSection = () => {
+  const [reportData, setReportData] = useState({
+    totalUsers: 0,
+    totalBookings: 0,
+    totalRevenue: 0,
+    totalEvents: 0,
+    recentBookings: [],
+    bookingsByStatus: {},
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchReportData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const fetchReportData = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      
+      // Fetch all data in parallel
+      const [usersRes, bookingsRes, eventsRes] = await Promise.all([
+        axiosInstance.get("/users", { headers: { Authorization: `Bearer ${token}` } }),
+        axiosInstance.get("/bookings", { headers: { Authorization: `Bearer ${token}` } }),
+        axiosInstance.get("/events", { headers: { Authorization: `Bearer ${token}` } }),
+      ]);
+
+      const users = usersRes.data.users || usersRes.data || [];
+      const bookings = bookingsRes.data.bookings || bookingsRes.data || [];
+      const events = eventsRes.data.events || eventsRes.data || [];
+
+      // Calculate bookings by status
+      const bookingsByStatus = bookings.reduce((acc, booking) => {
+        const status = booking.status || "pending";
+        acc[status] = (acc[status] || 0) + 1;
+        return acc;
+      }, {});
+
+      // Calculate total revenue
+      const totalRevenue = bookings.reduce((sum, booking) => {
+        return sum + (booking.event?.price || 0);
+      }, 0);
+
+      setReportData({
+        totalUsers: users.length,
+        totalBookings: bookings.length,
+        totalRevenue,
+        totalEvents: events.length,
+        recentBookings: bookings.slice(0, 5),
+        bookingsByStatus,
+      });
+    } catch (err) {
+      console.error("Error fetching report data:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const statCards = [
+    { label: "Total Users", value: reportData.totalUsers, color: "bg-purple-50", icon: <Users size={24} className="text-purple-500" /> },
+    { label: "Total Bookings", value: reportData.totalBookings, color: "bg-blue-50", icon: <Ticket size={24} className="text-blue-500" /> },
+    { label: "Total Revenue", value: `KSh ${reportData.totalRevenue.toLocaleString()}`, color: "bg-green-50", icon: <DollarSign size={24} className="text-green-500" /> },
+    { label: "Total Events", value: reportData.totalEvents, color: "bg-orange-50", icon: <Calendar size={24} className="text-orange-500" /> },
+  ];
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-6 animate-fade-in">
+      {/* Summary Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {statCards.map((stat, index) => (
+          <div key={index} className={`${stat.color} rounded-xl p-6`}>
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="text-sm font-medium text-gray-600 mb-1">{stat.label}</p>
+                <p className="text-2xl font-bold text-gray-900">{stat.value}</p>
+              </div>
+              <div className="p-3 bg-white rounded-lg shadow-sm">{stat.icon}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Bookings by Status */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Bookings by Status</h3>
+          <div className="space-y-3">
+            {Object.entries(reportData.bookingsByStatus).map(([status, count]) => (
+              <div key={status} className="flex items-center justify-between">
+                <span className="text-gray-600 capitalize">{status}</span>
+                <div className="flex items-center gap-2">
+                  <div className="w-32 bg-gray-200 rounded-full h-2">
+                    <div
+                      className="bg-purple-600 h-2 rounded-full"
+                      style={{ width: `${(count / reportData.totalBookings) * 100}%` }}
+                    ></div>
+                  </div>
+                  <span className="text-sm font-medium text-gray-900">{count}</span>
+                </div>
+              </div>
+            ))}
+            {Object.keys(reportData.bookingsByStatus).length === 0 && (
+              <p className="text-gray-500">No booking data available</p>
+            )}
+          </div>
+        </div>
+
+        {/* Recent Bookings */}
+        <div className="bg-white rounded-xl shadow-sm p-6">
+          <h3 className="text-lg font-semibold text-gray-900 mb-4">Recent Bookings</h3>
+          <div className="space-y-3">
+            {reportData.recentBookings.length === 0 ? (
+              <p className="text-gray-500">No recent bookings</p>
+            ) : (
+              reportData.recentBookings.map((booking, index) => (
+                <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-0">
+                  <div>
+                    <p className="text-sm font-medium text-gray-900">{booking.user?.name || "User"}</p>
+                    <p className="text-xs text-gray-500">{booking.event?.title || "Event"}</p>
+                  </div>
+                  <span className="text-sm font-semibold text-purple-600">KSh {booking.event?.price || 0}</span>
+                </div>
+              ))
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Dashboard;
 

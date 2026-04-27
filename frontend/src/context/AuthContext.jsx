@@ -2,16 +2,16 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
+console.log("API BASE IS:", process.env.REACT_APP_API_URL);
+
+// ✅ SAFE for production + development
+  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-
-  // ✅ SAFE for production + development
-  const API_BASE =
-    process.env.REACT_APP_API_URL ||
-    "https://ticketwise-backend.onrender.com/api";
 
   const API_URL = `${API_BASE}/users`;
 

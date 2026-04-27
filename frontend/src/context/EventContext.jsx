@@ -1,5 +1,5 @@
 ﻿// src/context/EventContext.jsx
-import React, { createContext, useState, useContext, useEffect } from "react";
+import React, { createContext, useState, useContext, useEffect, useMemo, useCallback } from "react";
 import axios from "axios";
 import { useAuth } from "./AuthContext";
 
@@ -12,23 +12,28 @@ export const EventProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   // Base URL from environment variable
-  const API_BASE_URL =
-    process.env.REACT_APP_API_URL ||
-    "https://ticketwise-backend.onrender.com/api";
+  // const API_BASE_URL =
+  //   process.env.REACT_APP_API_URL ||
+  //   "https://ticketwise-backend.onrender.com/api";
+
+  const API_BASE_URL = "http://localhost:5000/api";
 
   // Axios instance
-  const axiosInstance = axios.create({
-    baseURL: API_BASE_URL,
-  });
+  const axiosInstance = useMemo(() => {
+    const instance = axios.create({
+      baseURL: API_BASE_URL,
+    });
 
-  // Add token to request headers if user is logged in
-  axiosInstance.interceptors.request.use((config) => {
-    if (token) config.headers.Authorization = `Bearer ${token}`;
-    return config;
-  });
+    instance.interceptors.request.use((config) => {
+      if (token) config.headers.Authorization = `Bearer ${token}`;
+      return config;
+    });
+
+    return instance;
+  }, [API_BASE_URL, token]);
 
   // Fetch all events
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     setLoading(true);
     try {
       const res = await axiosInstance.get("/events");
@@ -39,7 +44,7 @@ export const EventProvider = ({ children }) => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [axiosInstance]);
 
   // Create new event
   const createEvent = async (newEvent) => {
@@ -94,11 +99,11 @@ export const EventProvider = ({ children }) => {
     }
   };
 
-  // Fetch events on mount or when token changes (after login)
+  // Fetch events on mount and whenever the axios instance changes
   useEffect(() => {
     fetchEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
+  }, []);
 
   return (
     <EventContext.Provider

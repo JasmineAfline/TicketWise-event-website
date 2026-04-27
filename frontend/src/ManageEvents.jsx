@@ -2,17 +2,17 @@
 import axios from "axios";
 
 const ManageEvents = () => {
-  const apiUrl = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+  const apiUrl = process.env.REACT_APP_API_URL || "https://ticketwise-backend.onrender.com/api";
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // âœ… Fetch events
+  // Fetch events
   const fetchEvents = async () => {
     try {
       const res = await axios.get(`${apiUrl}/events`);
-      setEvents(res.data.events || res.data); // adjust if API wraps data
+      setEvents(res.data.events || res.data);
     } catch (err) {
-      console.error("âŒ Error fetching events:", err.response?.data || err.message);
+      console.error("Error fetching events:", err.response?.data || err.message);
     } finally {
       setLoading(false);
     }
@@ -46,11 +46,12 @@ const ManageEvents = () => {
         name: newName,
       });
 
-      setEvents(events.map((event) => (event._id === id ? res.data : event)));
-      alert("âœ… Event updated successfully");
+      const updatedEvent = res.data.event || res.data;
+      setEvents(events.map((event) => (event._id === id ? updatedEvent : event)));
+      alert("Event updated successfully");
     } catch (err) {
-      console.error("âŒ Error updating event:", err.response?.data || err.message);
-      alert("âŒ Failed to update event");
+      console.error("Error updating event:", err.response?.data || err.message);
+      alert("Failed to update event");
     }
   };
 

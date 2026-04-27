@@ -1,22 +1,21 @@
-// src/routes/eventRoutes.js
 const express = require("express");
 const router = express.Router();
-const eventController = require("../controllers/eventController");
+const {
+  createEvent,
+  getAllEvents,
+  getEventById,
+  updateEvent,
+  deleteEvent,
+} = require("../controllers/eventController");
+const { protect, authorize } = require("../middleware/authMiddleware");
 
-// ==========================
-// Public / unprotected routes
-// ==========================
+// Public
+router.get("/", getAllEvents);
+router.get("/:id", getEventById);
 
-// Get all events
-router.get("/", eventController.getAllEvents);
-
-// Get single event by ID
-router.get("/:id", eventController.getEventById);
-
-// Create event (unprotected for testing)
-router.post("/", eventController.createEvent);
-
-// Delete event (unprotected for testing)
-router.delete("/:id", eventController.deleteEvent);
+// Protected
+router.post("/", protect, authorize("admin", "employee"), createEvent);
+router.put("/:id", protect, authorize("admin", "employee"), updateEvent);
+router.delete("/:id", protect, authorize("admin", "employee"), deleteEvent);
 
 module.exports = router;

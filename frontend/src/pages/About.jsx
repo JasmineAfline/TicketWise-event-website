@@ -13,6 +13,7 @@ export default function About() {
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const revealOnScroll = (index) => {
@@ -27,7 +28,7 @@ export default function About() {
     <div className="bg-gray-50 text-gray-900">
 
       {/* Breadcrumb / Page Header */}
-      <section className="bg-gradient-to-r from-purple-600 to-pink-500 text-white py-16 relative overflow-hidden">
+      <section className="bg-purple-700 text-white py-16 relative overflow-hidden">
         <div className="absolute inset-0 opacity-10">
           <div className="absolute top-10 left-10 w-32 h-32 bg-white rounded-full animate-pulse"></div>
           <div className="absolute bottom-10 right-10 w-40 h-40 bg-white rounded-full animate-bounce"></div>
@@ -38,7 +39,7 @@ export default function About() {
             Learn who we are, what we do, and how we bring people together through events.
           </p>
           <nav className="mt-6 text-sm animate-fade-in" style={{animationDelay: "0.4s"}}>
-            <Link to="/" className="hover:text-yellow-400 transition-colors">Home</Link> /
+            <Link to="/" className="hover:text-purple-200 transition-colors">Home</Link> /
             <span className="font-semibold ml-1">About Us</span>
           </nav>
         </div>
@@ -47,7 +48,7 @@ export default function About() {
       {/* History Section */}
       <section className="py-16 container mx-auto px-6 flex flex-col md:flex-row items-center gap-10">
         <div className="md:w-1/2" style={revealOnScroll(0)}>
-          <h2 className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500">Our Brief but Rich History</h2>
+          <h2 className="text-3xl font-bold mb-6 text-purple-700">Our Brief but Rich History</h2>
           <p className="text-gray-700 leading-relaxed mb-4 hover:text-gray-900 transition-colors">
             Tickewise was founded in 2023 as a visionary platform aimed at revolutionizing how people discover and manage events.
             Our goal has always been to provide a seamless experience for attendees, organizers, and administrators alike.
@@ -69,7 +70,7 @@ export default function About() {
       {/* Vision Section */}
       <section className="py-16 bg-gray-100">
         <div className="container mx-auto px-6 text-center">
-          <h2 className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500 animate-fade-in">Our Vision</h2>
+          <h2 className="text-3xl font-bold mb-6 text-purple-700 animate-fade-in">Our Vision</h2>
           <p className="text-gray-700 max-w-3xl mx-auto mb-12 animate-fade-in" style={{animationDelay: "0.2s"}}>
             To be the leading event management platform that connects communities, inspires experiences, and enables organizers to succeed sustainably.
           </p>
@@ -86,8 +87,8 @@ export default function About() {
                 className="bg-white p-8 rounded-2xl shadow-md hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-2 hover:scale-105 cursor-pointer group"
                 style={revealOnScroll(index)}
               >
-                <card.icon className="text-purple-600 text-4xl mb-4 mx-auto group-hover:text-pink-500 transition-colors" />
-                <h3 className="font-semibold text-xl mb-2 group-hover:text-purple-600 transition-colors">{card.title}</h3>
+                <card.icon className="text-purple-600 text-4xl mb-4 mx-auto transition-colors" />
+                <h3 className="font-semibold text-xl mb-2 text-gray-800">{card.title}</h3>
                 <p className="text-gray-600 text-sm group-hover:text-gray-800 transition-colors">{card.desc}</p>
               </div>
             ))}
@@ -133,7 +134,7 @@ export default function About() {
 
       {/* CTA */}
       <section className="py-16 container mx-auto px-6 text-center">
-        <h2 className="text-3xl font-bold mb-6 text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-500">Join the Tickewise Experience</h2>
+          <h2 className="text-3xl font-bold mb-6 text-purple-700">Join the Tickewise Experience</h2>
         <p className="text-gray-700 max-w-2xl mx-auto mb-8 hover:text-gray-900 transition-colors">
           Experience seamless event management today. Whether you're an organizer or an attendee, Tickewise brings the best events to your fingertips.
         </p>
