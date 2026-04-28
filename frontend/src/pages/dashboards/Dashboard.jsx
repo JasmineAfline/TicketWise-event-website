@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect } from "react";
+﻿import React, { useState, useEffect, useCallback } from "react";
 import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -48,26 +48,9 @@ const Dashboard = () => {
     if (user) {
       fetchDashboardData();
     }
-  }, [user, activeTab]);
+  }, [user, activeTab, fetchDashboardData]);
 
-  const fetchDashboardData = async () => {
-    setLoading(true);
-    try {
-      if (activeTab === "overview") {
-        await fetchStats();
-      } else if (activeTab === "bookings") {
-        await fetchBookings();
-      } else if (activeTab === "events") {
-        await fetchEvents();
-      }
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchStats = async () => {
+  const fetchStats = useCallback(async () => {
     try {
       const bookingsRes = await axiosInstance.get(
         user.role === "user" ? "/bookings/my" : "/bookings"
@@ -86,9 +69,9 @@ const Dashboard = () => {
     } catch (error) {
       console.error("Error fetching stats:", error);
     }
-  };
+  }, [user]);
 
-  const fetchBookings = async () => {
+  const fetchBookings = useCallback(async () => {
     try {
       const res = await axiosInstance.get(
         user.role === "user" ? "/bookings/my" : "/bookings"
@@ -98,9 +81,9 @@ const Dashboard = () => {
       console.error("Error fetching bookings:", error);
       setData([]);
     }
-  };
+  }, [user]);
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     try {
       const res = await axiosInstance.get("/events");
       setData(res.data.events || res.data || []);
@@ -108,7 +91,24 @@ const Dashboard = () => {
       console.error("Error fetching events:", error);
       setData([]);
     }
-  };
+  }, []);
+
+  const fetchDashboardData = useCallback(async () => {
+    setLoading(true);
+    try {
+      if (activeTab === "overview") {
+        await fetchStats();
+      } else if (activeTab === "bookings") {
+        await fetchBookings();
+      } else if (activeTab === "events") {
+        await fetchEvents();
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, [activeTab, fetchStats, fetchBookings, fetchEvents]);
 
   const handleLogout = () => {
     logout();
