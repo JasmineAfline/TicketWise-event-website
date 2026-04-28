@@ -11,12 +11,10 @@ export const EventProvider = ({ children }) => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Base URL from environment variable
-  // const API_BASE_URL =
-  //   process.env.REACT_APP_API_URL ||
-  //   "https://ticketwise-backend.onrender.com/api";
-
-  const API_BASE_URL = "http://localhost:5000/api";
+  const API_BASE_URL =
+    process.env.REACT_APP_API_URL
+      ? `${process.env.REACT_APP_API_URL}/api`
+      : "https://ticketwise-backend.onrender.com/api";
 
   // Axios instance
   const axiosInstance = useMemo(() => {
@@ -99,7 +97,6 @@ export const EventProvider = ({ children }) => {
     }
   };
 
-  // Fetch events on mount and whenever the axios instance changes
   useEffect(() => {
     fetchEvents();
     // eslint-disable-next-line react-hooks/exhaustive-deps
