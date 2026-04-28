@@ -24,7 +24,7 @@ const Booking = () => {
       }
     };
     fetchBookingsData();
-  }, [token]);
+  }, [token, apiUrl]);
 
   const handleCancel = async (id) => {
     if (!window.confirm("Are you sure you want to cancel this booking?")) return;

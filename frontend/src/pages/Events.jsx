@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { BsCalendarEvent, BsClock, BsGeoAlt } from "react-icons/bs";
 
 const Events = () => {
-  const { events, loading, fetchEvents, deleteEvent, bookEvent } = useEvent();
+  const { events, fetchEvents, deleteEvent, bookEvent } = useEvent();
   const { user } = useAuth();
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
@@ -13,9 +13,9 @@ const Events = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredEvents, setFilteredEvents] = useState([]);
 
-  useEffect(() => {
-    fetchEvents();
-  }, []);
+ useEffect(() => {
+  fetchEvents();
+}, [fetchEvents]);
 
   // Search and filter functionality
   useEffect(() => {

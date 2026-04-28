@@ -1,6 +1,5 @@
 ﻿import "./LandingPage.css";
 import { Link, useNavigate } from "react-router-dom";
-import { useState } from "react";
 import ReviewCard from "../components/ReviewCard";
 import FAQSection from "../components/FAQSection";
 import { Sparkles, Calendar, MapPin, ArrowRight, Star, Users, Shield, Zap } from "lucide-react";
