@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 
 console.log("API BASE IS:", process.env.REACT_APP_API_URL);
 
-// ✅ SAFE for production + development
-  const API_BASE = process.env.REACT_APP_API_URL || "http://localhost:5000/api";
+
+const API_BASE = process.env.REACT_APP_API_URL || "https://ticketwise-backend.onrender.com"
 
 const AuthContext = createContext();
 
@@ -17,7 +17,7 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  // Load user info if token exists
+  
   useEffect(() => {
     const fetchUser = async () => {
       if (token) {
@@ -41,10 +41,10 @@ export const AuthProvider = ({ children }) => {
     };
 
     fetchUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [token]);
 
-  // Role-based redirect
+  
   const redirectByRole = (role) => {
     if (!role) return;
     if (role === "admin") navigate("/admin/dashboard");

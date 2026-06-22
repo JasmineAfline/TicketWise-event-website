@@ -14,7 +14,7 @@ export const EventProvider = ({ children }) => {
   const API_BASE_URL =
     process.env.REACT_APP_API_URL
       ? `${process.env.REACT_APP_API_URL}/api`
-      : "https://ticketwise-backend.onrender.com/api";
+      : "https://ticketwise-backend.onrender.com";
 
   // Axios instance
   const axiosInstance = useMemo(() => {
