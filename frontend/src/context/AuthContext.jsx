@@ -18,19 +18,16 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   
-  useEffect(() => {
+ useEffect(() => {
     const fetchUser = async () => {
       if (token) {
         try {
           axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
-
           const res = await axios.get(`${API_URL}/me`);
-
           const userData = {
             ...res.data.user,
             token,
           };
-
           setUser(userData);
           redirectByRole(userData.role);
         } catch (err) {
@@ -39,9 +36,8 @@ export const AuthProvider = ({ children }) => {
         }
       }
     };
-
     fetchUser();
-    
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [token]);
 
   
