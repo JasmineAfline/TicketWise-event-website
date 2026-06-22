@@ -4,7 +4,6 @@ import { useNavigate } from "react-router-dom";
 
 console.log("API BASE IS:", process.env.REACT_APP_API_URL);
 
-
 const API_BASE = process.env.REACT_APP_API_URL || "https://ticketwise-backend.onrender.com"
 
 const AuthContext = createContext();
@@ -17,8 +16,26 @@ export const AuthProvider = ({ children }) => {
 
   const navigate = useNavigate();
 
-  
- useEffect(() => {
+  // Redirect by role
+  const redirectByRole = (role) => {
+    if (!role) return;
+    if (role === "admin") navigate("/admin/dashboard");
+    else if (role === "employee") navigate("/employee/dashboard");
+    else navigate("/user/dashboard");
+  };
+
+  // Logout
+  const logout = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("token");
+
+    delete axios.defaults.headers.common["Authorization"];
+
+    navigate("/login");
+  };
+
+  useEffect(() => {
     const fetchUser = async () => {
       if (token) {
         try {
@@ -37,16 +54,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
     fetchUser();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [token]);
-
-  
-  const redirectByRole = (role) => {
-    if (!role) return;
-    if (role === "admin") navigate("/admin/dashboard");
-    else if (role === "employee") navigate("/employee/dashboard");
-    else navigate("/user/dashboard");
-  };
+  }, [token, API_URL, logout, redirectByRole]);
 
   // Login
   const login = async (email, password) => {
@@ -89,17 +97,6 @@ export const AuthProvider = ({ children }) => {
     } catch (err) {
       alert(err.response?.data?.message || "Registration failed");
     }
-  };
-
-  // Logout
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("token");
-
-    delete axios.defaults.headers.common["Authorization"];
-
-    navigate("/login");
   };
 
   return (

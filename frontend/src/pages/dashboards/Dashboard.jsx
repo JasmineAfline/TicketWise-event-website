@@ -44,12 +44,6 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    if (user) {
-      fetchDashboardData();
-    }
-  }, [user, activeTab, fetchDashboardData]);
-
   const fetchStats = useCallback(async () => {
     try {
       const bookingsRes = await axiosInstance.get(
@@ -109,6 +103,12 @@ const Dashboard = () => {
       setLoading(false);
     }
   }, [activeTab, fetchStats, fetchBookings, fetchEvents]);
+
+  useEffect(() => {
+    if (user) {
+      fetchDashboardData();
+    }
+  }, [user, activeTab, fetchDashboardData]);
 
   const handleLogout = () => {
     logout();
@@ -864,4 +864,3 @@ const ReportsSection = () => {
 };
 
 export default Dashboard;
-
