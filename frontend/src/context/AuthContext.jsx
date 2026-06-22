@@ -12,7 +12,7 @@ export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || null);
 
-  const API_URL = `${API_BASE}/users`;
+  const API_URL = `${API_BASE}/api/users`;
 
   const navigate = useNavigate();
 
